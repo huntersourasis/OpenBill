@@ -1,0 +1,89 @@
+<aside
+    class="d-none d-lg-flex flex-column bg-white border-end shadow-sm
+           position-sticky top-0"
+    style="width:240px; min-height:100vh;">
+
+    <!-- Sidebar Header -->
+    <div class="px-3 py-4 border-bottom">
+        <h6 class="mb-0 text-uppercase fw-semibold text-muted">
+            Dashboard
+        </h6>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <ul class="nav nav-pills flex-column gap-1 p-3 sidebar-nav">
+
+        <li class="nav-item">
+            <a href="/"
+               class="nav-link d-flex align-items-center gap-3
+               <%= navLink === 'home' ? 'active' : '' %>">
+                <i class="fa fa-house"></i>
+                <span>Home</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/pages/invoice"
+               class="nav-link d-flex align-items-center gap-3
+               <%= navLink === 'invoices' ? 'active' : '' %>">
+                <i class="fa-solid fa-file-invoice"></i>
+                <span>Invoices</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/pages/customers"
+               class="nav-link d-flex align-items-center gap-3
+               <%= navLink === 'customers' ? 'active' : '' %>">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Customers</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/pages/products"
+               class="nav-link d-flex align-items-center gap-3
+               <%= navLink === 'products' ? 'active' : '' %>">
+                <i class="fa-solid fa-box"></i>
+                <span>Products</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/pages/payments"
+               class="nav-link d-flex align-items-center gap-3
+               <%= navLink === 'payments' ? 'active' : '' %>">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Payments</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/pages/users"
+               class="nav-link d-flex align-items-center gap-3
+               <%= navLink === 'users' ? 'active' : '' %>">
+                <i class="fa-solid fa-users"></i>
+                <span>Users</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/pages/reports"
+               class="nav-link d-flex align-items-center gap-3
+               <%= navLink === 'reports' ? 'active' : '' %>">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reports</span>
+            </a>
+        </li>
+
+        <li class="nav-item mt-3 pt-3 border-top">
+            <a href="/pages/settings"
+               class="nav-link d-flex align-items-center gap-3
+               <%= navLink === 'settings' ? 'active' : '' %>">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+
+    </ul>
+</aside>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <%- include('../components/cdns') %>
+</head>
+<body class="d-flex flex-column vh-100">
+    <%- include('../components/navbar') %>
+
+    <div class="d-flex flex-grow-1 overflow-hidden">
+
+        <%- include('../components/sidebar') %>
+
+        <main class="flex-grow-1 p-4 overflow-auto">
+
+            <div class="container-fluid">
+            <!-- Page Title -->
+            <div class="mb-4">
+                <h4 class="fw-semibold">Dashboard Overview</h4>
+                <p class="text-muted mb-0">Quick summary of billing activity</p>
+            </div>
+        
+            <!-- Summary Cards -->
+            <div class="row g-4 mb-4">
+                <!-- Total Revenue -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Revenue</h6>
+                                    <h4 class="fw-bold mb-0">₹ 1,25,000</h4>
+                                </div>
+                                <div class="bg-success bg-opacity-10 text-success rounded-circle p-3">
+                                    <i class="fa fa-wallet fa-lg"></i>
+                                </div>
+                            </div>
+                            <small class="text-success">+12% from last month</small>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Total Invoices -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Invoices</h6>
+                                    <h4 class="fw-bold mb-0">320</h4>
+                                </div>
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3">
+                                    <i class="fa fa-file-invoice fa-lg"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">This month</small>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Paid Payments -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Payments Received</h6>
+                                    <h4 class="fw-bold mb-0">₹ 98,450</h4>
+                                </div>
+                                <div class="bg-info bg-opacity-10 text-info rounded-circle p-3">
+                                    <i class="fa fa-credit-card fa-lg"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">Completed payments</small>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Pending Dues -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Pending Dues</h6>
+                                    <h4 class="fw-bold mb-0">₹ 26,550</h4>
+                                </div>
+                                <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-3">
+                                    <i class="fa fa-exclamation-circle fa-lg"></i>
+                                </div>
+                            </div>
+                            <small class="text-danger">Requires attention</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Secondary Cards -->
+            <div class="row g-4">
+                <!-- Customers -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">Total Customers</h6>
+                            <h3 class="fw-bold">145</h3>
+                            <p class="text-muted mb-0">Active registered customers</p>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Products -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">Products / Services</h6>
+                            <h3 class="fw-bold">58</h3>
+                            <p class="text-muted mb-0">Available items for billing</p>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Recent Activity -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">Recent Activity</h6>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">
+                                    <small class="text-muted">Invoice #INV-1021 created</small>
+                                </li>
+                                <li class="mb-2">
+                                    <small class="text-muted">Payment received ₹ 5,500</small>
+                                </li>
+                                <li>
+                                    <small class="text-muted">New customer added</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </main>
+    </div>
+
+    <%- include('../components/footer') %>
+</body>
+</html>

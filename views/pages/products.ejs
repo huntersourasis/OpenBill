@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <%- include('../components/cdns') %>
+</head>
+<body class="d-flex flex-column vh-100">
+    <%- include('../components/navbar') %>
+
+    <div class="d-flex flex-grow-1 overflow-hidden">
+        <%- include('../components/sidebar') %>
+
+            <main class="flex-grow-1 p-4 overflow-auto">
+                <div class="container-fluid">
+                
+                    <!-- Page Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h4 class="fw-semibold mb-1">Products & Services</h4>
+                            <p class="text-muted mb-0">Manage items available for billing</p>
+                        </div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                            <i class="fa fa-plus me-1"></i> Add Product
+                        </button>
+                    </div>
+                
+                    <!-- Stats Cards -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Total Products</h6>
+                                    <h3 class="fw-bold mb-0">58</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Active Products</h6>
+                                    <h3 class="fw-bold mb-0">52</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Out of Stock</h6>
+                                    <h3 class="fw-bold mb-0">6</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <!-- Products Table -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                        
+                            <!-- Table Header -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-semibold mb-0">Product List</h6>
+                                <input type="text" class="form-control form-control-sm w-25" placeholder="Search product...">
+                            </div>
+                        
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Product Name</th>
+                                            <th>SKU</th>
+                                            <th>Price</th>
+                                            <th>Stock</th>
+                                            <th>Tax (%)</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Web Hosting</td>
+                                            <td>WH-001</td>
+                                            <td>₹ 1,500</td>
+                                            <td>Unlimited</td>
+                                            <td>18%</td>
+                                            <td>
+                                                <span class="badge bg-success">Active</span>
+                                            </td>
+                                            <td class="text-end">
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    
+                                        <tr>
+                                            <td>2</td>
+                                            <td>Graphic Design</td>
+                                            <td>GD-010</td>
+                                            <td>₹ 2,500</td>
+                                            <td>—</td>
+                                            <td>18%</td>
+                                            <td>
+                                                <span class="badge bg-secondary">Inactive</span>
+                                            </td>
+                                            <td class="text-end">
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        
+                        </div>
+                    </div>
+                
+                </div>
+
+                <!-- Add Product Modal -->
+                <div class="modal fade" id="addProductModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content border-0 shadow">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New Product</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                        
+                            <form action="/products/create" method="POST">
+                                <div class="modal-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Product Name</label>
+                                            <input type="text" name="name" class="form-control" required>
+                                        </div>
+                                    
+                                        <div class="col-md-6">
+                                            <label class="form-label">SKU</label>
+                                            <input type="text" name="sku" class="form-control">
+                                        </div>
+                                    
+                                        <div class="col-md-4">
+                                            <label class="form-label">Price</label>
+                                            <input type="number" name="price" class="form-control" step="0.01" required>
+                                        </div>
+                                    
+                                        <div class="col-md-4">
+                                            <label class="form-label">Tax (%)</label>
+                                            <input type="number" name="tax" class="form-control" value="18">
+                                        </div>
+                                    
+                                        <div class="col-md-4">
+                                            <label class="form-label">Stock</label>
+                                            <input type="number" name="stock" class="form-control">
+                                        </div>
+                                    
+                                        <div class="col-12">
+                                            <label class="form-label">Description</label>
+                                            <textarea name="description" class="form-control" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-save me-1"></i> Save Product
+                                    </button>
+                                </div>
+                            </form>
+                        
+                        </div>
+                    </div>
+                </div>
+
+        </main>
+    </div>
+
+    <%- include('../components/footer') %>
+</body>
+</html>

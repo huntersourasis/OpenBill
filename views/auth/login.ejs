@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <%-  include('../components/cdns') %>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToastSuccess" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-success text-light">
+      <strong class="me-auto">Login</strong>
+      <small>Just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Login successful.
+    </div>
+  </div>
+  <div id="liveToastFailur" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-danger text-light">
+      <strong class="me-auto">Login</strong>
+      <small>Just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Invalid Email or Wrong Password
+    </div>
+  </div>
+</div>
+
+  <%-  include('./navbar') %>
+
+  <main class="container my-5">
+    <h1 class="fw-bold">Login</h1>
+    <p class="text-muted">Welcome back to <%- include('../components/appName') %></p>
+        <section class="row align-items-center g-5">
+          <div class="col-lg-7 d-none d-lg-block text-center">
+            <div class="p-5">
+              <img src="<%= avaterURL %>" 
+                   alt="Login Illustration" 
+                   class="img-fluid mb-4" 
+                   style="max-height: 400px;">
+            
+            </div>
+          </div>
+      
+          <div class="col-12 col-lg-5">
+            <div class="card shadow-sm border-0">
+              <div class="card-body p-4 p-sm-5">
+            
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control email" id="floatingInput" name="email" placeholder="name@example.com" required>
+                    <label for="floatingInput">Email address</label>
+                  </div>
+              
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control password" id="floatingPassword" name="password" placeholder="Password" required>
+                    <label for="floatingPassword">Password</label>
+                  </div>
+
+              
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-between align-items-center">
+                    <a href="/forgot-password" class="text-decoration-none small fw-bold">Forgot Password ?</a>
+                    <button type="button" class="btn btn-primary px-4 loginBtn">Next</button>
+                  </div>
+              </div>
+            </div>
+        
+            <div class="mt-4 d-flex justify-content-between px-2">
+              <span class="text-muted small">English (Indian)</span>
+              <div>
+                <a href="#" class="text-muted small text-decoration-none me-3">Help</a>
+                <a href="#" class="text-muted small text-decoration-none">Privacy</a>
+              </div>
+            </div>
+          </div>
+        </section>
+  </main>
+
+  <%-  include('../components/footer') %>
+<script>
+  const loginBtn = document.querySelector(".loginBtn");
+  loginBtn.addEventListener("click" , (e)=>{
+    e.preventDefault();
+
+    const email = document.querySelector(".email").value;
+    const password = document.querySelector(".password").value;
+
+    fetch("/auth/login" , {
+      method : "POST",
+      headers : {
+        "Content-Type" : "application/json"
+      },
+      body : JSON.stringify({
+        email : email,
+        password : password
+      })
+    }).then((res)=>{
+      return res.json();
+    }).then((data)=>{
+      if(data.success)
+      {
+        const toastLiveExample = document.getElementById('liveToastSuccess');
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+        toastBootstrap.show();
+        setTimeout(()=>{
+          window.location.href = "/pages/home";
+        } , 1000);
+      } else
+      {
+        const toastLiveExample = document.getElementById('liveToastFailur');
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+        toastBootstrap.show();
+      }
+    }).catch((err)=>{
+      console.log(err);
+    })
+  });
+</script>
+</body>
+</html>

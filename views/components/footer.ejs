@@ -1,0 +1,50 @@
+<style>
+  .footer-links .footer-link {
+    color: #adb5bd;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease-in-out;
+  }
+
+  .footer-links .footer-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
+</style>
+
+<footer class="bg-dark text-light mt-auto border-top border-secondary">
+    <div class="container py-4">
+
+        <div class="row align-items-center gy-3">
+
+            <!-- App / Copyright -->
+            <div class="col-md-6 text-center text-md-start">
+                <span class="fw-semibold">
+                    © <%= new Date().getFullYear() %>
+                    <%- include('../components/appName') %>
+                </span>
+                <span class="text-secondary ms-1">
+                    All rights reserved.
+                </span>
+            </div>
+
+            <!-- Footer Links -->
+            <div class="col-md-6 text-center text-md-end">
+                <ul class="list-inline mb-0 footer-links">
+                    <li class="list-inline-item">
+                        <a href="/pages/privacy" class="footer-link">Privacy</a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="/pages/terms" class="footer-link">Terms</a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="/pages/support" class="footer-link">Support</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+</footer>

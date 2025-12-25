@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <%- include('../components/cdns') %>
+</head>
+<body class="d-flex flex-column vh-100">
+    <%- include('../components/navbar') %>
+
+    <div class="d-flex flex-grow-1 overflow-hidden">
+
+        <%- include('../components/sidebar') %>
+
+        <main class="flex-grow-1 p-4 overflow-auto">
+
+            <div class="container-fluid">
+            
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-semibold mb-1">Reports</h4>
+                        <p class="text-muted mb-0">Analyze revenue, invoices, and payment performance</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-file-pdf me-1"></i> Export PDF
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-file-csv me-1"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+            
+                <!-- Report Filters -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h6 class="fw-semibold mb-3">Filter Reports</h6>
+                    
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">From Date</label>
+                                <input type="date" class="form-control">
+                            </div>
+                        
+                            <div class="col-md-3">
+                                <label class="form-label">To Date</label>
+                                <input type="date" class="form-control">
+                            </div>
+                        
+                            <div class="col-md-3">
+                                <label class="form-label">Report Type</label>
+                                <select class="form-select">
+                                    <option>Sales Report</option>
+                                    <option>Invoice Report</option>
+                                    <option>Payment Report</option>
+                                    <option>Customer Report</option>
+                                </select>
+                            </div>
+                        
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-primary w-100">
+                                    <i class="fa fa-filter me-1"></i> Apply Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Summary Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-1">Total Revenue</h6>
+                                <h3 class="fw-bold mb-0">₹ 1,25,000</h3>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-1">Total Invoices</h6>
+                                <h3 class="fw-bold mb-0">320</h3>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-1">Payments Received</h6>
+                                <h3 class="fw-bold mb-0">₹ 98,450</h3>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-1">Outstanding Dues</h6>
+                                <h3 class="fw-bold mb-0">₹ 26,550</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Report Table -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                    
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-semibold mb-0">Report Details</h6>
+                            <input type="text" class="form-control form-control-sm w-25" placeholder="Search report...">
+                        </div>
+                    
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Reference</th>
+                                        <th>Customer</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>2025-01-10</td>
+                                        <td>INV-1021</td>
+                                        <td>John Doe</td>
+                                        <td>Invoice</td>
+                                        <td>₹ 5,500</td>
+                                        <td>
+                                            <span class="badge bg-success">Paid</span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td>2</td>
+                                        <td>2025-01-08</td>
+                                        <td>INV-1019</td>
+                                        <td>ABC Pvt Ltd</td>
+                                        <td>Invoice</td>
+                                        <td>₹ 12,000</td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td>3</td>
+                                        <td>2025-01-08</td>
+                                        <td>PAY-501</td>
+                                        <td>ABC Pvt Ltd</td>
+                                        <td>Payment</td>
+                                        <td>₹ 8,000</td>
+                                        <td>
+                                            <span class="badge bg-success">Completed</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    
+                    </div>
+                </div>
+            
+            </div>
+
+        </main>
+    </div>
+
+    <%- include('../components/footer') %>
+</body>
+</html>

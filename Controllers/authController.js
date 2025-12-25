@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import {User} from "../Modals/userModal.js";
 import jwt from 'jsonwebtoken';
-
+const expiresIn = 3;
 const loginController = async (req , res)=>{
     try 
     {
@@ -24,12 +24,12 @@ const loginController = async (req , res)=>{
 
            const secretKey = process.env.JWT_SECRET;
 
-           const jwt_token = jwt.sign(payload , secretKey , {expiresIn : "1h"});
+           const jwt_token = jwt.sign(payload , secretKey , {expiresIn : `${expiresIn}h`});
            
            res.cookie('token' , jwt_token , {
                 httpOnly: true,  
                 sameSite: 'strict', 
-                maxAge: 3600000
+                maxAge: (3600000 * expiresIn)
            })
 
            return res.status(200).json({

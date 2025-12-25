@@ -1,89 +1,84 @@
-<aside
-    class="d-none d-lg-flex flex-column bg-white border-end shadow-sm
-           position-sticky top-0"
-    style="width:240px; min-height:100vh;">
+<aside class="d-none d-lg-flex flex-column bg-white border-end shadow-sm position-sticky top-0"
+       style="width:240px; min-height:100vh;">
 
-    <!-- Sidebar Header -->
     <div class="px-3 py-4 border-bottom">
-        <h6 class="mb-0 text-uppercase fw-semibold text-muted">
-            Dashboard
-        </h6>
+        <h6 class="mb-0 text-uppercase fw-semibold text-muted">Dashboard</h6>
     </div>
 
-    <!-- Sidebar Navigation -->
-    <ul class="nav nav-pills flex-column gap-1 p-3 sidebar-nav">
+    <ul class="nav nav-pills flex-column gap-1 p-3">
 
         <li class="nav-item">
-            <a href="/"
-               class="nav-link d-flex align-items-center gap-3
-               <%= navLink === 'home' ? 'active' : '' %>">
-                <i class="fa fa-house"></i>
-                <span>Home</span>
+            <a href="/" class="nav-link <%= navLink === 'home' ? 'active' : '' %>">
+                <i class="fa fa-house me-2"></i> Home
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/invoice"
-               class="nav-link d-flex align-items-center gap-3
-               <%= navLink === 'invoices' ? 'active' : '' %>">
-                <i class="fa-solid fa-file-invoice"></i>
-                <span>Invoices</span>
+            <a href="/pages/invoice" class="nav-link <%= navLink === 'invoices' ? 'active' : '' %>">
+                <i class="fa fa-file-invoice me-2"></i> Invoices
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/customers"
-               class="nav-link d-flex align-items-center gap-3
-               <%= navLink === 'customers' ? 'active' : '' %>">
-                <i class="fa-solid fa-user-group"></i>
-                <span>Customers</span>
+            <a href="/pages/customers" class="nav-link <%= navLink === 'customers' ? 'active' : '' %>">
+                <i class="fa fa-user-group me-2"></i> Customers
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/products"
-               class="nav-link d-flex align-items-center gap-3
-               <%= navLink === 'products' ? 'active' : '' %>">
-                <i class="fa-solid fa-box"></i>
-                <span>Products</span>
+            <a href="/pages/products" class="nav-link <%= navLink === 'products' ? 'active' : '' %>">
+                <i class="fa fa-box me-2"></i> Products
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/payments"
-               class="nav-link d-flex align-items-center gap-3
-               <%= navLink === 'payments' ? 'active' : '' %>">
-                <i class="fa-solid fa-credit-card"></i>
-                <span>Payments</span>
+            <a href="/pages/payments" class="nav-link <%= navLink === 'payments' ? 'active' : '' %>">
+                <i class="fa fa-credit-card me-2"></i> Payments
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/users"
-               class="nav-link d-flex align-items-center gap-3
-               <%= navLink === 'users' ? 'active' : '' %>">
-                <i class="fa-solid fa-users"></i>
-                <span>Users</span>
+            <a href="/pages/users" class="nav-link <%= navLink === 'users' ? 'active' : '' %>">
+                <i class="fa fa-users me-2"></i> Users
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/reports"
-               class="nav-link d-flex align-items-center gap-3
-               <%= navLink === 'reports' ? 'active' : '' %>">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>Reports</span>
+            <a href="/pages/reports" class="nav-link <%= navLink === 'reports' ? 'active' : '' %>">
+                <i class="fa fa-chart-line me-2"></i> Reports
             </a>
         </li>
 
         <li class="nav-item mt-3 pt-3 border-top">
-            <a href="/pages/settings"
-               class="nav-link d-flex align-items-center gap-3
-               <%= navLink === 'settings' ? 'active' : '' %>">
-                <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
+            <a href="/pages/settings" class="nav-link <%= navLink === 'settings' ? 'active' : '' %>">
+                <i class="fa fa-gear me-2"></i> Settings
             </a>
         </li>
 
     </ul>
 </aside>
+
+<!-- Mobile Sidebar -->
+<div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileSidebar">
+    <div class="offcanvas-header border-bottom">
+        <h6 class="offcanvas-title fw-semibold">Dashboard</h6>
+        <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body p-0">
+        <ul class="nav nav-pills flex-column gap-1 p-3">
+
+            <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="/pages/invoice" class="nav-link">Invoices</a></li>
+            <li class="nav-item"><a href="/pages/customers" class="nav-link">Customers</a></li>
+            <li class="nav-item"><a href="/pages/products" class="nav-link">Products</a></li>
+            <li class="nav-item"><a href="/pages/payments" class="nav-link">Payments</a></li>
+            <li class="nav-item"><a href="/pages/users" class="nav-link">Users</a></li>
+            <li class="nav-item"><a href="/pages/reports" class="nav-link">Reports</a></li>
+            <li class="nav-item mt-3 pt-3 border-top">
+                <a href="/pages/settings" class="nav-link">Settings</a>
+            </li>
+
+        </ul>
+    </div>
+</div>

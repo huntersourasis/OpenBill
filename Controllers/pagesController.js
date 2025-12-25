@@ -5,8 +5,11 @@ const protect = (req, res, page) => {
         const token = req.cookies?.token;
 
         if (!token) {
-            return res.render("error/401-Unauthorized", {
-                cooldown : 5000
+            return res.render("error/Error", {
+                cooldown : 5000 ,
+                code : 401 ,
+                msg : "Unauthorized Access" ,
+                content : "You do not have permission to view this page."              
             });
         }
 
@@ -18,9 +21,11 @@ const protect = (req, res, page) => {
         });
 
     } catch (error) {
-        console.error("JWT Error:", error.message);
-        return res.render("error/401-Unauthorized" , {
-            cooldown : 5000
+        return res.render("error/Error" , {
+            cooldown : 5000 ,
+            code : 401,
+            msg : "Unauthorized Access" ,
+            content : "You do not have permission to view this page."   
         });
     }
 };

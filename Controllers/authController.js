@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import {User} from "../Modals/userModal.js";
+import getCurrentDate from '../Utils/currentDate.js';
 import jwt from 'jsonwebtoken';
 const expiresIn = 3;
 const loginController = async (req , res)=>{
@@ -14,13 +15,27 @@ const loginController = async (req , res)=>{
                 msg : "Invalid Email"
             });
         }
+        const status = isEmailExist.status;
+        if(!status)
+        {
+            return res.status(401).json({
+                success : false,
+                msg : "This user is currently deactivated.",
+            });
+        }
         const isMatch = await bcrypt.compare(password , isEmailExist.password);
         if(isMatch)
         {
            const payload = {
+                fullname : isEmailExist.fullname,
                 email : isEmailExist.email,
                 role : isEmailExist.role
            };
+
+           isEmailExist.lastlogin = getCurrentDate();
+
+           await isEmailExist.save();
+
 
            const secretKey = process.env.JWT_SECRET;
 

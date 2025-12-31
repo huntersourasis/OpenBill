@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
+    fullname : {
+        type : String,
+        require : true,
+        default : "Openbill User"
+    },
     email: { 
         type: String, 
         required: true, 
@@ -15,6 +20,13 @@ const UserSchema = new mongoose.Schema({
         type: String, 
         required: true,
         default: 'user'
+    },
+    status : {
+        type : Boolean,
+        default : true
+    },
+    lastlogin : {
+        type : String
     }
 }); 
 

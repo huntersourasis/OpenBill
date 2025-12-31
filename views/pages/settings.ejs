@@ -2,215 +2,309 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../components/cdns') %>
 </head>
+
 <body class="d-flex flex-column vh-100">
-    <%- include('../components/navbar') %>
 
-    <div class="d-flex flex-grow-1 overflow-hidden">
+<%- include('../components/navbar') %>
 
-        <%- include('../components/sidebar') %>
-    
-        <main class="flex-grow-1 p-4 overflow-auto">
+<div class="d-flex flex-grow-1 overflow-hidden">
+    <%- include('../components/sidebar') %>
 
-            <div class="container-fluid">
-            
-                <!-- Page Header -->
-                <div class="mb-4">
-                    <h4 class="fw-semibold mb-1">Settings</h4>
-                    <p class="text-muted mb-0">Configure application, business, and security settings</p>
-                </div>
-            
-                <div class="row g-4">
-                
-                    <!-- Left Navigation -->
-                    <div class="col-lg-3">
-                        <div class="card border-0 shadow-sm">
-                            <div class="list-group list-group-flush">
-                                <a href="#company" class="list-group-item list-group-item-action active">Company Settings</a>
-                                <a href="#billing" class="list-group-item list-group-item-action">Billing & Tax</a>
-                                <a href="#users" class="list-group-item list-group-item-action">User & Roles</a>
-                                <a href="#security" class="list-group-item list-group-item-action">Security</a>
-                                <a href="#system" class="list-group-item list-group-item-action">System</a>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <!-- Right Content -->
-                    <div class="col-lg-9">
-                    
-                        <!-- Company Settings -->
-                        <div id="company" class="card border-0 shadow-sm mb-4">
-                            <div class="card-body">
-                                <h6 class="fw-semibold mb-3">Company Information</h6>
-                            
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Company Name</label>
-                                        <input type="text" class="form-control" placeholder="Your Company Pvt Ltd">
-                                    </div>
-                                
-                                    <div class="col-md-6">
-                                        <label class="form-label">Business Email</label>
-                                        <input type="email" class="form-control" placeholder="billing@company.com">
-                                    </div>
-                                
-                                    <div class="col-md-6">
-                                        <label class="form-label">Phone Number</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                
-                                    <div class="col-md-6">
-                                        <label class="form-label">GST Number</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                
-                                    <div class="col-12">
-                                        <label class="form-label">Address</label>
-                                        <textarea class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- Billing & Tax -->
-                        <div id="billing" class="card border-0 shadow-sm mb-4">
-                            <div class="card-body">
-                                <h6 class="fw-semibold mb-3">Billing & Tax Settings</h6>
-                            
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label class="form-label">Default Tax (%)</label>
-                                        <input type="number" class="form-control" value="18">
-                                    </div>
-                                
-                                    <div class="col-md-4">
-                                        <label class="form-label">Invoice Prefix</label>
-                                        <input type="text" class="form-control" value="INV-">
-                                    </div>
-                                
-                                    <div class="col-md-4">
-                                        <label class="form-label">Currency</label>
-                                        <select class="form-select">
-                                            <option value="INR">INR (₹)</option>
-                                            <option value="USD">USD ($)</option>
-                                            <option value="EUR">EUR (€)</option>
-                                        </select>
-                                    </div>
-                                
-                                    <div class="col-md-6">
-                                        <label class="form-label">Payment Due Days</label>
-                                        <input type="number" class="form-control" value="15">
-                                    </div>
-                                
-                                    <div class="col-md-6 d-flex align-items-center">
-                                        <div class="form-check mt-4">
-                                            <input class="form-check-input" type="checkbox" checked>
-                                            <label class="form-check-label">
-                                                Enable automatic invoice numbering
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- Users & Roles -->
-                        <div id="users" class="card border-0 shadow-sm mb-4">
-                            <div class="card-body">
-                                <h6 class="fw-semibold mb-3">User & Role Defaults</h6>
-                            
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Default Role for New Users</label>
-                                        <select class="form-select">
-                                            <option>Staff</option>
-                                            <option>Viewer</option>
-                                        </select>
-                                    </div>
-                                
-                                    <div class="col-md-6">
-                                        <label class="form-label">Max Login Attempts</label>
-                                        <input type="number" class="form-control" value="5">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- Security -->
-                        <div id="security" class="card border-0 shadow-sm mb-4">
-                            <div class="card-body">
-                                <h6 class="fw-semibold mb-3">Security Settings</h6>
-                            
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" checked>
-                                            <label class="form-check-label">
-                                                Enable JWT Authentication
-                                            </label>
-                                        </div>
-                                    </div>
-                                
-                                    <div class="col-md-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox">
-                                            <label class="form-check-label">
-                                                Enable Two-Factor Authentication (2FA)
-                                            </label>
-                                        </div>
-                                    </div>
-                                
-                                    <div class="col-md-6">
-                                        <label class="form-label">Session Timeout (minutes)</label>
-                                        <input type="number" class="form-control" value="30">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- System -->
-                        <div id="system" class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h6 class="fw-semibold mb-3">System Settings</h6>
-                            
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Time Zone</label>
-                                        <select class="form-select">
-                                            <option>Asia/Kolkata</option>
-                                            <option>UTC</option>
-                                        </select>
-                                    </div>
-                                
-                                    <div class="col-md-6">
-                                        <label class="form-label">Date Format</label>
-                                        <select class="form-select">
-                                            <option>DD-MM-YYYY</option>
-                                            <option>YYYY-MM-DD</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- Save Button -->
-                        <div class="d-flex justify-content-end mt-4">
-                            <button class="btn btn-primary">
-                                <i class="fa fa-save me-1"></i> Save Settings
-                            </button>
-                        </div>
-                    
-                    </div>
-                </div>
-            
+    <main class="flex-grow-1 p-4 overflow-auto">
+
+        <div class="container-fluid">
+
+            <div class="mb-4">
+                <h4 class="fw-semibold mb-1">Settings</h4>
+                <p class="text-muted mb-0">
+                    Configure application, business, and security settings
+                </p>
             </div>
 
-        </main>
-    </div>
+            <div class="row g-4">
 
-    <%- include('../components/footer') %>
+                <!-- LEFT NAV -->
+                <div class="col-lg-3">
+                    <div class="card border-0 shadow-sm">
+                        <div class="list-group list-group-flush">
+                            <a href="#company" class="list-group-item list-group-item-action active">Company Settings</a>
+                            <a href="#billing" class="list-group-item list-group-item-action">Billing & Tax</a>
+                            <a href="#users" class="list-group-item list-group-item-action">User & Roles</a>
+                            <a href="#security" class="list-group-item list-group-item-action">Security</a>
+                            <a href="#system" class="list-group-item list-group-item-action">System</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT CONTENT -->
+                <div class="col-lg-9">
+
+                    <!-- COMPANY -->
+                    <div id="company" class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">Company Information</h6>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Company Name</label>
+                                    <input id="com_name" class="form-control">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Business Email</label>
+                                    <input id="business_email" type="email" class="form-control">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number</label>
+                                    <input id="ph_number" class="form-control">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">GST Number</label>
+                                    <input id="gst_number" class="form-control">
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Address</label>
+                                    <textarea id="address" rows="3" class="form-control"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-3">
+                                <button class="btn btn-primary" onclick="saveCompany()">
+                                    <i class="fa fa-save me-1"></i> Save Company
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BILLING -->
+                    <div id="billing" class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">Billing & Tax Settings</h6>
+
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Default Tax (%)</label>
+                                    <input id="default_tax" type="number" class="form-control">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Invoice Prefix</label>
+                                    <input id="invoice_prefix" class="form-control">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Currency</label>
+                                    <select id="currency" class="form-select">
+                                        <option value="INR">INR (₹)</option>
+                                        <option value="USD">USD ($)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-check">
+                                        <input id="automatic_invoice_numbering" type="checkbox" class="form-check-input">
+                                        <label class="form-check-label">
+                                            Enable automatic invoice numbering
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-3">
+                                <button class="btn btn-primary" onclick="saveBilling()">
+                                    <i class="fa fa-save me-1"></i> Save Billing
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- USER -->
+                    <div id="users" class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">User & Role Defaults</h6>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Default Role</label>
+                                    <select id="role" class="form-select">
+                                        <option>Staff</option>
+                                        <option>Viewer</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Max Login Attempts</label>
+                                    <input id="max_login_attempts" type="number" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-3">
+                                <button class="btn btn-primary" onclick="saveUser()">
+                                    <i class="fa fa-save me-1"></i> Save Users
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECURITY -->
+                    <div id="security" class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">Security Settings</h6>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Session Timeout (minutes)</label>
+                                    <input id="session_timeout" type="number" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-3">
+                                <button class="btn btn-primary" onclick="saveSecurity()">
+                                    <i class="fa fa-save me-1"></i> Save Security
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SYSTEM -->
+                    <div id="system" class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">System Settings</h6>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Time Zone</label>
+                                    <select id="time_zone" class="form-select">
+                                        <option>Asia/Kolkata</option>
+                                        <option>UTC</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-3">
+                                <button class="btn btn-primary" onclick="saveSystem()">
+                                    <i class="fa fa-save me-1"></i> Save System
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+    <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div id="toastBody" class="toast-body"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<%- include('../components/footer') %>
+
+
+<script>
+
+let toastInstance;
+
+function showToast(message, type = "success") {
+    const toastEl = document.getElementById("appToast");
+    const toastBody = document.getElementById("toastBody");
+
+    const colorMap = {
+        success: "bg-success text-white",
+        error: "bg-danger text-white",
+        warning: "bg-warning text-dark",
+        info: "bg-primary text-white"
+    };
+
+    toastEl.className = `toast align-items-center border-0 ${colorMap[type] || colorMap.info}`;
+    toastBody.innerText = message;
+
+    if (!toastInstance) {
+        toastInstance = new bootstrap.Toast(toastEl, { delay: 3000 });
+    }
+
+    toastInstance.show();
+}
+    
+async function loadSettings() {
+    const res = await fetch('/api/settings/read');
+    const { data } = await res.json();
+
+    data.forEach(s => {
+        Object.keys(s).forEach(k => {
+            const el = document.getElementById(k);
+            if (!el) return;
+            el.type === 'checkbox' ? el.checked = s[k] : el.value = s[k] ?? '';
+        });
+    });
+}
+
+async function update(section, payload) {
+    await fetch('/api/settings/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ section, data: payload })
+    }).then((res)=>{
+        return res.json();
+    }).then((data)=>{
+        if (data.success)
+        {
+            showToast(`${section} updated successfully` , "success");
+        } else
+        {
+            showToast(data.msg , "warning");
+        }
+    }).catch((err)=>{
+        showToast("Internal Error" , "danger");
+    });
+}
+
+const saveCompany = () => update("companysettings", {
+    com_name: com_name.value,
+    business_email: business_email.value,
+    ph_number: ph_number.value,
+    gst_number: gst_number.value,
+    address: address.value
+});
+
+const saveBilling = () => update("billandtax", {
+    default_tax: default_tax.value,
+    invoice_prefix: invoice_prefix.value,
+    currency: currency.value,
+    automatic_invoice_numbering: automatic_invoice_numbering.checked
+});
+
+const saveUser = () => update("userandrole", {
+    role: role.value,
+    max_login_attempts: max_login_attempts.value
+});
+
+const saveSecurity = () => update("security", {
+    session_timeout: session_timeout.value
+});
+
+const saveSystem = () => update("system", {
+    time_zone: time_zone.value
+});
+
+loadSettings();
+</script>
+
 </body>
 </html>

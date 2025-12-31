@@ -1,12 +1,24 @@
-<!DOCTYPE html>
+<% if (payload.role === 'admin') { %>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users</title>
     <%- include('../components/cdns') %>
+    <style>
+        .display-none {
+            display: none;
+        }
+
+        .display-block {
+            display:  block;
+        }
+    </style>
 </head>
+
 <body class="d-flex flex-column vh-100">
+
     <%- include('../components/navbar') %>
 
     <div class="d-flex flex-grow-1 overflow-hidden">
@@ -14,10 +26,9 @@
         <%- include('../components/sidebar') %>
 
         <main class="flex-grow-1 p-4 overflow-auto">
-
             <div class="container-fluid">
-            
-                <!-- Page Header -->
+
+                <!-- HEADER -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h4 class="fw-semibold mb-1">Users</h4>
@@ -27,45 +38,18 @@
                         <i class="fa fa-user-plus me-1"></i> Add User
                     </button>
                 </div>
-            
-                <!-- Stats Cards -->
-                <div class="row g-4 mb-4">
-                    <div class="col-md-4">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h6 class="text-muted mb-1">Total Users</h6>
-                                <h3 class="fw-bold mb-0">12</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h6 class="text-muted mb-1">Active Users</h6>
-                                <h3 class="fw-bold mb-0">9</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h6 class="text-muted mb-1">Disabled Accounts</h6>
-                                <h3 class="fw-bold mb-0">3</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            
-                <!-- Users Table -->
+
+                <!-- TABLE -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
-                    
-                        <!-- Table Header -->
+
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-semibold mb-0">User Accounts</h6>
-                            <input type="text" class="form-control form-control-sm w-25" placeholder="Search user...">
+                            <input id="searchInput" type="text"
+                                   class="form-control form-control-sm w-25"
+                                   placeholder="Search user...">
                         </div>
-                    
+
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
@@ -79,113 +63,196 @@
                                         <th class="text-end">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="usersTableBody">
                                     <tr>
-                                        <td>1</td>
-                                        <td>Admin User</td>
-                                        <td>admin@billing.com</td>
-                                        <td>
-                                            <span class="badge bg-primary">Admin</span>
-                                        </td>
-                                        <td>2025-01-10 14:32</td>
-                                        <td>
-                                            <span class="badge bg-success">Active</span>
-                                        </td>
-                                        <td class="text-end">
-                                            <button class="btn btn-sm btn-outline-warning">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="fa fa-ban"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Billing Staff</td>
-                                        <td>staff@billing.com</td>
-                                        <td>
-                                            <span class="badge bg-info text-dark">Staff</span>
-                                        </td>
-                                        <td>2025-01-09 10:11</td>
-                                        <td>
-                                            <span class="badge bg-secondary">Disabled</span>
-                                        </td>
-                                        <td class="text-end">
-                                            <button class="btn btn-sm btn-outline-warning">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-success">
-                                                <i class="fa fa-check"></i>
-                                            </button>
+                                        <td colspan="7" class="text-center text-muted">
+                                            Loading users...
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    
+
                     </div>
                 </div>
-            
+
             </div>
 
-            <!-- Add User Modal -->
-            <div class="modal fade" id="addUserModal" tabindex="-1">
+            <!-- ADD USER -->
+            <div class="modal fade" id="addUserModal">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content border-0 shadow">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add New User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                    
-                        <form action="/users/create" method="POST">
+                        <div>
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New User</h5>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
                             <div class="modal-body">
+                                <div class="row c_alert_row display-none">
+                                    <div class="alert c_alert_div" role="alert">
+                                        <span class="c_alert"></span>
+                                    </div>
+                                </div>
                                 <div class="row g-3">
-                                
                                     <div class="col-md-6">
                                         <label class="form-label">Full Name</label>
-                                        <input type="text" name="name" class="form-control" required>
+                                        <input type="text" name="name" class="form-control c_fullname" required>
                                     </div>
-                                
+
                                     <div class="col-md-6">
-                                        <label class="form-label">Email Address</label>
-                                        <input type="email" name="email" class="form-control" required>
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control c_email" required>
                                     </div>
-                                
+
                                     <div class="col-md-6">
                                         <label class="form-label">Role</label>
-                                        <select name="role" class="form-select">
-                                            <option value="admin">Admin</option>
-                                            <option value="staff">Staff</option>
-                                            <option value="viewer">Viewer</option>
+                                        <select name="role" class="form-select c_role" aria-readonly="true">
+                                            <option value="user">User</option>
                                         </select>
                                     </div>
-                                
+
                                     <div class="col-md-6">
-                                        <label class="form-label">Account Status</label>
-                                        <select name="status" class="form-select">
+                                        <label class="form-label">Status</label>
+                                        <select name="status" class="form-select c_status">
                                             <option value="active">Active</option>
                                             <option value="disabled">Disabled</option>
                                         </select>
                                     </div>
-                                
+
                                     <div class="col-12">
-                                        <label class="form-label">Temporary Password</label>
-                                        <input type="text" name="password" class="form-control" placeholder="Auto-generated or manual">
+                                        <label class="form-label">Password</label>
+                                        <input type="text" name="password" class="form-control c_password">
                                     </div>
-                                
                                 </div>
                             </div>
-                        
+
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-save me-1"></i> Create User
+                                <button class="btn btn-light c_cancel" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary createBtn">
+                                    <i class="fa fa-save me-1"></i> Create
                                 </button>
                             </div>
-                        </form>
-                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPDATE USER -->
+            <div class="modal fade" id="updateUserModal" tabindex="-1">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content border-0 shadow">
+                        <div>
+                            <input type="hidden" name="id" id="updateUserId">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update <span id="updateModalHead"></span></h5>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="row u_alert_row display-none">
+                                    <div class="alert u_alert_div"  role="alert">
+                                        <span class="u_alert"></span>
+                                    </div>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name</label>
+                                        <input id="updateUserName" name="name" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input id="updateUserEmail" name="email" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Role</label>
+                                        <select id="updateUserRole" name="role" class="form-select">
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Status</label>
+                                        <select id="updateUserStatus" name="status" class="form-select">
+                                            <option value="active">Active</option>
+                                            <option value="disabled">Disabled</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label class="form-label">New Password</label>
+                                        <input id="updateUserPassword" name="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-warning updateBtn">
+                                    <i class="fa fa-save me-1"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS -->
+            <div class="modal fade" id="statusUserModal" >
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow">
+                        <div>
+                            <input type="hidden" name="id" id="statusUserId">
+                            <input type="hidden" name="status" id="statusUserValue">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">Change Status</h5>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body text-center">
+                                <i class="fa fa-power-off fa-3x text-warning mb-3"></i>
+                                <p>Are you sure you want to
+                                    <strong id="statusActionText"></strong> this user?</p>
+                            </div>
+
+                            <div class="modal-footer justify-content-center">
+                                <button class="btn btn-light " data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-secondary statusBtn">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DELETE -->
+            <div class="modal fade" id="deleteUserModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow">
+                        <div>
+                            <input type="hidden" name="id" id="deleteUserId">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title text-danger">Delete User</h5>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body text-center">
+                                <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                                <p>This action cannot be undone.</p>
+                            </div>
+
+                            <div class="modal-footer justify-content-center">
+                                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-danger deleteBtn">
+                                    <i class="fa fa-trash me-1"></i> Delete
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -194,5 +261,370 @@
     </div>
 
     <%- include('../components/footer') %>
+
+    <script>
+        const tbody = document.getElementById("usersTableBody");
+        function showData()
+        {
+            fetch("/api/users/read" , {
+            method : "POST",
+            headers : {
+                "Content-Type" : "application/json"
+            }
+        })
+            .then(res => res.json())
+            .then(({ success, data }) => {
+                tbody.innerHTML = "";
+
+                if (!success || data.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">No users found</td>
+                        </tr>`;
+                    return;
+                }
+                data.forEach((u, i) => {
+                    const roleColor = u.role === "admin" ? "primary" :
+                                      u.role === "user" ? "secondary" : "warning";
+                    const statusColor = u.status === true ? "success" : "danger";
+
+                    const actionsBtns = `<button class="btn btn-sm btn-outline-secondary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#statusUserModal"
+                                    data-id="${u._id}"
+                                    data-status="${u.status}">
+                                    <i class="fa fa-power-off"></i>
+                                </button>
+
+                                <button class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteUserModal"
+                                    data-id="${u._id}">
+                                    <i class="fa fa-trash"></i>
+                                </button>`;
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${u.fullname}</td>
+                            <td>${u.email}</td>
+                            <td><span class="badge bg-${roleColor}">${u.role.toUpperCase()}</span></td>
+                            <td>${u.lastlogin ? u.lastlogin : "—"}</td>
+                            <td><span class="badge bg-${statusColor}">${u.status ? 'ACTIVE' : 'DISABLED'}</span></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#updateUserModal"
+                                    data-id="${u._id}"
+                                    data-name="${u.fullname}"
+                                    data-email="${u.email}"
+                                    data-role="${u.role}"
+                                    data-status="${u.status === true ? 'active' : 'disabled'}">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+
+                                ${ u.role != 'admin' ? actionsBtns : ""}
+                            </td>
+                        </tr>`;
+                });
+            });
+        }
+
+        document.getElementById("updateUserModal")
+            .addEventListener("show.bs.modal", e => {
+                const b = e.relatedTarget;
+                updateUserId.value = b.dataset.id;
+                updateUserName.value = b.dataset.name;
+                document.getElementById("updateModalHead").innerHTML = b.dataset.name;
+                updateUserEmail.value = b.dataset.email;
+                updateUserRole.value = b.dataset.role;
+                updateUserStatus.value = b.dataset.status;
+            });
+
+        document.getElementById("deleteUserModal")
+            .addEventListener("show.bs.modal", e => {
+                deleteUserId.value = e.relatedTarget.dataset.id;
+            });
+
+        document.getElementById("statusUserModal")
+            .addEventListener("show.bs.modal", e => {
+                const b = e.relatedTarget;
+                const current = document.getElementById("statusUserValue").value;
+                statusUserId.value = b.dataset.id;
+                statusUserValue.value = current === 'active' ? "disabled" : "active";
+                statusActionText.innerText = current === 'active' ? "deactivate" : "activate";
+        });
+
+        function generatePassword(length) {
+            if (!Number.isInteger(length) || length <= 0) {
+                throw new Error("Password length must be a positive integer");
+            }
+            const charPool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const regex = /^[A-Za-z0-9!@#$%^&*()_+\-=[\]{}|;:,.<>?]$/;
+        
+            let password = '';
+            while (password.length < length) {
+                const char = charPool.charAt(Math.floor(Math.random() * charPool.length));
+                if (regex.test(char)) {
+                    password += char;
+                }
+            }
+            return password;
+        }
+
+        const c_fullname = document.querySelector(".c_fullname");
+        const c_email = document.querySelector(".c_email");
+        const c_role = document.querySelector(".c_role");
+        const c_status = document.querySelector(".c_status");
+        const c_password = document.querySelector(".c_password");
+        
+        document.addEventListener("DOMContentLoaded" , ()=>{
+            showData();
+            c_password.value = generatePassword(10);   
+        })
+
+        const createUserBtn = document.querySelector(".createBtn");
+        createUserBtn.addEventListener("click" , (e)=>{
+            e.preventDefault();
+            fetch("/api/users/create" , {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({
+                    fullname : c_fullname.value,
+                    email : c_email.value.toLowerCase(),
+                    role : c_role.value,
+                    status : c_status.value == 'active' ? true : false,
+                    password : c_password.value
+                })
+            }).then((res)=>{
+                return res.json();
+            }).then((data)=>{
+                const alert = document.querySelector(".c_alert");
+                const alertDiv = document.querySelector(".c_alert_div");
+                const alertRow = document.querySelector(".c_alert_row");
+                if(data.success)
+                {
+                    alertDiv.classList.remove("alert-warning");
+                    alertDiv.classList.add("alert-success");
+                    alertRow.classList.remove("display-none");
+                    alertRow.classList.add("display-block");
+                    alert.innerHTML = data.msg.toUpperCase();
+                    setTimeout(() => {
+                        alertRow.classList.remove("display-block");
+                        alertRow.classList.add("display-none");
+                        c_fullname.value = "";
+                        c_email.value = "";
+                        c_password.value = generatePassword(10);
+                        document.querySelector(".c_cancel").click();
+                    }, 1600); 
+                    showData();
+                } else
+                {
+                    alertDiv.classList.remove("alert-success");
+                    alertDiv.classList.add("alert-warning");
+                    alertRow.classList.remove("display-none");
+                    alertRow.classList.add("display-block");
+                    alert.innerHTML = data.msg.toUpperCase();
+                }
+            }).catch((err)=>{
+                alert(err);
+            })
+        })
+        
+        const deleteBtn = document.querySelector(".deleteBtn");
+
+        deleteBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+        
+            const userId = document.getElementById("deleteUserId").value;
+            if (!userId) return;
+        
+            try {
+                const res = await fetch("/api/users/delete", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id: userId })
+                });
+            
+                const data = await res.json();
+            
+                if (data.success) {
+                    const modalEl = document.getElementById("deleteUserModal");
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    modal.hide();
+                    showData();
+                } else {
+                    alert("Error: " + data.msg);
+                }
+            
+            } catch (err) {
+                console.error(err);
+                alert("Something went wrong while deleting user");
+            }
+        });
+
+        const statusBtn = document.querySelector(".statusBtn");
+        statusBtn.addEventListener("click" , (e)=>{
+            e.preventDefault();
+            const userId = document.getElementById("statusUserId").value;
+            fetch("/api/users/update-status" , {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({
+                    id : userId
+                })
+            })
+            .then((res)=>{return res.json})
+            .then((data)=>{
+                const modalEl = document.getElementById("statusUserModal");
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                modal.hide();
+                showData();
+            }).catch((err)=>{
+                alert(err);
+            })
+        })
+
+        const updateBtn = document.querySelector(".updateBtn");
+        updateBtn.addEventListener("click" , (e)=>{
+            e.preventDefault();
+            const mongoid = document.getElementById("updateUserId").value;
+            const fullname = document.getElementById("updateUserName").value;
+            const email = document.getElementById("updateUserEmail").value;
+            const role = document.getElementById("updateUserRole").value;
+            const status = document.getElementById("updateUserStatus").value === 'active' ? true : false;
+            const password = document.getElementById("updateUserPassword").value;
+            fetch("/api/users/update" , {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({
+                    id : mongoid,
+                    fullname : fullname,
+                    email : email.toLowerCase(),
+                    role : role,
+                    status : status,
+                    password : password
+                })
+            }).then((res)=>{
+                return res.json();
+            }).then((data)=>{
+                const alertRow = document.querySelector('.u_alert_row');
+                const alertDiv = document.querySelector('.u_alert_div');
+                const alert = document.querySelector('.u_alert');
+                if(data.success)
+                {
+                    const modalEl = document.getElementById("updateUserModal");
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    alertRow.classList.remove('display-none');
+                    alertRow.classList.add('display-block');
+                    alertDiv.classList.remove("alert-warning");
+                    alertDiv.classList.add("alert-success");
+                    alert.innerHTML = data.msg.toUpperCase();
+                    setTimeout(()=>{
+                        alertRow.classList.remove("display-block");
+                        alertRow.classList.add("display-none");
+                        modal.hide();
+                    } , 1600);
+                    showData();
+                } else
+                {
+                    alertRow.classList.remove('display-none');
+                    alertRow.classList.add('display-block');
+                    alertDiv.classList.remove("alert-success");
+                    alertDiv.classList.add("alert-warning");
+                    alert.innerHTML = data.msg.toUpperCase();
+                }
+            }).catch((err)=>{
+                alert(err);
+            })
+        })
+
+        const searchInput = document.getElementById("searchInput");
+
+        searchInput.addEventListener("keyup", () => {
+            const filter = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll("#usersTableBody tr");
+            rows.forEach(row => {
+                if (row.children.length < 2) return;
+                const name = row.children[1].innerText.toLowerCase();
+                const email = row.children[2].innerText.toLowerCase();
+                if (name.includes(filter) || email.includes(filter)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
+<% } else { %>
+    <%- include('../components/cdns') %>
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+        <div class="card shadow-sm border-0" style="max-width: 420px;">
+            <div class="card-body text-center p-4">
+
+                <!-- Icon -->
+                <div class="mb-3">
+                    <i class="fa fa-lock text-danger fs-1"></i>
+                </div>
+
+                <!-- Title -->
+                <h3 class="fw-bold text-danger mb-2">Access Denied</h3>
+
+                <!-- Message -->
+                <p class="text-muted mb-4">
+                    You do not have administrator privileges to access this page.
+                </p>
+
+                <!-- Actions -->
+                <div class="d-grid gap-2">
+                    <a href="/" class="btn btn-primary">
+                        Go to Dashboard
+                    </a>
+                    <button id="confirmLogoutBtn" class="btn btn-outline-secondary">
+                        Logout
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        const confirmLogoutBtn = document.getElementById("confirmLogoutBtn");
+
+        confirmLogoutBtn.addEventListener("click", async () => {
+            confirmLogoutBtn.disabled = true;
+            confirmLogoutBtn.textContent = "Logging out...";
+
+            try {
+                const res = await fetch("/auth/logout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ isLoggedConfirm: true })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    window.location.href = "/";
+                } else {
+                    alert("Logout failed. Please try again.");
+                }
+            } catch (err) {
+                alert("Network error. Please try again.");
+            }
+        });
+    </script>
+<% } %>
+
+ 

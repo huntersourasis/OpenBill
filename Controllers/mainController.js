@@ -8,7 +8,10 @@ const loginController = (req , res)=>{
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             return res.redirect("/pages/home");
         } catch (error) {
-            console.log("Welcome to EasyBill");
+            return res.status(500).json({
+                success : false,
+                msg : "Internal Server Error"
+            })
         }
 
     }

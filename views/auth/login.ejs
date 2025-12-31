@@ -27,7 +27,7 @@
       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
     <div class="toast-body">
-      Invalid Email or Wrong Password
+      <span class="loginError"></span>
     </div>
   </div>
 </div>
@@ -123,6 +123,7 @@
       {
         const toastLiveExample = document.getElementById('liveToastFailur');
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+        document.querySelector(".loginError").innerHTML = data.msg;
         toastBootstrap.show();
       }
     }).catch((err)=>{

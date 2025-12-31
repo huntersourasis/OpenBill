@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import {User} from "../Modals/userModal.js";
 import getCurrentDate from '../Utils/currentDate.js';
+import { sendHttpResponse } from '../Utils/httpResponse.js';
+import loadSettings from '../Utils/loadSettings.js';
 import jwt from 'jsonwebtoken';
-const expiresIn = 3;
 const loginController = async (req , res)=>{
     try 
     {
@@ -10,18 +11,21 @@ const loginController = async (req , res)=>{
         const isEmailExist = await User.findOne({email});
         if(!isEmailExist)
         {
-            return res.status(401).json({
-                success : false,
-                msg : "Invalid Email"
-            });
+            return sendHttpResponse(res , 401 , false , "Invalid Email");
         }
         const status = isEmailExist.status;
         if(!status)
         {
-            return res.status(401).json({
-                success : false,
-                msg : "This user is currently deactivated.",
-            });
+            return sendHttpResponse(res , 401 , false , "This user is currently deactivated");
+        }
+        const settings = await loadSettings();
+        const expiresIn = settings.sessionTimeout;
+        const maxLoginAttempts = isEmailExist?.maxLoginAttempts ?? 0;
+        if(maxLoginAttempts >= settings.maxLoginAttempts)
+        {
+            isEmailExist.status = false;
+            await isEmailExist.save();
+            return sendHttpResponse(res , 401 , false , "Maximum login attempts reached");
         }
         const isMatch = await bcrypt.compare(password , isEmailExist.password);
         if(isMatch)
@@ -33,40 +37,30 @@ const loginController = async (req , res)=>{
            };
 
            isEmailExist.lastlogin = getCurrentDate();
-
+           isEmailExist.maxLoginAttempts = 0;
            await isEmailExist.save();
 
 
            const secretKey = process.env.JWT_SECRET;
 
-           const jwt_token = jwt.sign(payload , secretKey , {expiresIn : `${expiresIn}h`});
+           const jwt_token = jwt.sign(payload , secretKey , {expiresIn : `${expiresIn}m`});
            
            res.cookie('token' , jwt_token , {
                 httpOnly: true,  
                 sameSite: 'strict', 
                 maxAge: (3600000 * expiresIn)
            })
-
-           return res.status(200).json({
-            success : true,
-            msg : "Login Successful",
-            token : jwt_token,
-            payload : payload
-           });
+           return sendHttpResponse(res , 200 , true , "Login Successful");
         } else
         {
-            return res.status(401).json({
-                success : false,
-                msg : "Incorrect Password",
-            });
+           isEmailExist.maxLoginAttempts = isEmailExist.maxLoginAttempts + 1;
+           await isEmailExist.save(); 
+           return sendHttpResponse(res , 401 , false , "Incorrect Password");
         }
     }
     catch (error) 
     {
-        return res.status(500).json({
-            success : false,
-            msg : "Internal Server Error"
-        })
+        return sendHttpResponse(res , 500 , false , "Internal Server Error");
     }
 }
 
@@ -78,23 +72,12 @@ const logoutController = (req, res) => {
             res.clearCookie('token', {
                 sameSite: 'strict'
             });
-
-            return res.status(200).json({
-                success: true,
-                message: "Logged out successfully"
-            });
+            return sendHttpResponse(res , 200 , true , "Logged out successfully");
         }
-
-        return res.status(400).json({
-            success: false,
-            msg: "Logout confirmation required"
-        });
+        return sendHttpResponse(res , 401 , false , "Logout confirmation required");
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            msg: "Server Error during logout"
-        });
+        return sendHttpResponse(res , 500 , false , "Internal Server Error");
     }
 }
 

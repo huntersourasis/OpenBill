@@ -97,12 +97,12 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Full Name</label>
-                                        <input type="text" name="name" class="form-control c_fullname" required>
+                                        <input type="text" name="name" autocomplete="off" class="form-control c_fullname" required>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Email</label>
-                                        <input type="email" name="email" class="form-control c_email" required>
+                                        <input type="email" name="email" autocomplete="off" class="form-control c_email" required>
                                     </div>
 
                                     <div class="col-md-6">
@@ -122,7 +122,7 @@
 
                                     <div class="col-12">
                                         <label class="form-label">Password</label>
-                                        <input type="text" name="password" class="form-control c_password">
+                                        <input type="text" autocomplete="off" name="password" class="form-control c_password">
                                     </div>
                                 </div>
                             </div>
@@ -159,18 +159,17 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Full Name</label>
-                                        <input id="updateUserName" name="name" class="form-control">
+                                        <input id="updateUserName" name="name" autocomplete="off" class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Email</label>
-                                        <input id="updateUserEmail" name="email" class="form-control">
+                                        <input id="updateUserEmail" name="email" autocomplete="off" class="form-control">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Role</label>
-                                        <select id="updateUserRole" name="role" class="form-select">
-                                            <option value="admin">Admin</option>
+                                        <select id="updateUserRole" name="role" class="form-select" aria-readonly="true">
                                             <option value="user">User</option>
                                         </select>
                                     </div>
@@ -185,7 +184,7 @@
 
                                     <div class="col-md-12">
                                         <label class="form-label">New Password</label>
-                                        <input id="updateUserPassword" name="text" class="form-control">
+                                        <input id="updateUserPassword" autocomplete="off" name="text" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -301,17 +300,7 @@
                                     data-bs-target="#deleteUserModal"
                                     data-id="${u._id}">
                                     <i class="fa fa-trash"></i>
-                                </button>`;
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${i + 1}</td>
-                            <td>${u.fullname}</td>
-                            <td>${u.email}</td>
-                            <td><span class="badge bg-${roleColor}">${u.role.toUpperCase()}</span></td>
-                            <td>${u.lastlogin ? u.lastlogin : "—"}</td>
-                            <td><span class="badge bg-${statusColor}">${u.status ? 'ACTIVE' : 'DISABLED'}</span></td>
-                            <td class="text-end">
+                                </button>
                                 <button class="btn btn-sm btn-outline-warning"
                                     data-bs-toggle="modal"
                                     data-bs-target="#updateUserModal"
@@ -322,13 +311,36 @@
                                     data-status="${u.status === true ? 'active' : 'disabled'}">
                                     <i class="fa fa-edit"></i>
                                 </button>
+                                `;
+                    const adminActionBtn = `
+                                <button class="btn btn-sm btn-outline-success" onclick="changeBtn()">
+                                    <i class="fa fa-edit"></i> Change
+                                </button>
+                    `;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${u.fullname}</td>
+                            <td>${u.email}</td>
+                            <td><span class="badge bg-${roleColor}">${u.role.toUpperCase()}</span></td>
+                            <td>${u.lastlogin ? u.lastlogin : "—"}</td>
+                            <td><span class="badge bg-${statusColor}">${u.status ? 'ACTIVE' : 'DISABLED'}</span></td>
+                            <td class="text-end">
 
-                                ${ u.role != 'admin' ? actionsBtns : ""}
+
+                                ${ u.role != 'admin' ? actionsBtns : adminActionBtn}
                             </td>
                         </tr>`;
                 });
             });
         }
+
+        function changeBtn ()
+        {
+            alert("Redirecting to Admin Password Changing Page");
+        }
+
+
 
         document.getElementById("updateUserModal")
             .addEventListener("show.bs.modal", e => {
@@ -349,10 +361,10 @@
         document.getElementById("statusUserModal")
             .addEventListener("show.bs.modal", e => {
                 const b = e.relatedTarget;
-                const current = document.getElementById("statusUserValue").value;
+                const current = b.dataset.status === 'true' ? 'active' : 'disabled';
                 statusUserId.value = b.dataset.id;
-                statusUserValue.value = current === 'active' ? "disabled" : "active";
-                statusActionText.innerText = current === 'active' ? "deactivate" : "activate";
+                statusUserValue.value = current == 'active' ? "disabled" : "active";
+                statusActionText.innerText = current == 'active' ? "deactivate" : "activate";
         });
 
         function generatePassword(length) {

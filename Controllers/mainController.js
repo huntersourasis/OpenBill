@@ -8,10 +8,12 @@ const loginController = (req , res)=>{
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             return res.redirect("/pages/home");
         } catch (error) {
-            return res.status(500).json({
-                success : false,
-                msg : "Internal Server Error"
-            })
+            res.clearCookie('token', {
+                sameSite: 'strict'
+            });
+            return res.render("auth/login" , {
+                avaterURL : "/svgs/work-from-home.svg" 
+            });
         }
 
     }

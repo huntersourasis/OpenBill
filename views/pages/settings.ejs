@@ -76,7 +76,7 @@
                             </div>
 
                             <div class="text-end mt-3">
-                                <button class="btn btn-primary" onclick="saveCompany()">
+                                <button class="btn btn-primary" onclick="validateCompanyDetails(document.getElementById('ph_number').value , document.getElementById('gst_number').value , document.getElementById('business_email').value)">
                                     <i class="fa fa-save me-1"></i> Save Company
                                 </button>
                             </div>
@@ -134,16 +134,12 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Default Role</label>
-                                    <select id="role" class="form-select">
-                                        <option>Staff</option>
-                                        <option>Viewer</option>
+                                    <select id="role" class="form-select" aria-readonly="true">
+                                        <option value="user">User</option>
                                     </select>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label class="form-label">Max Login Attempts</label>
-                                    <input id="max_login_attempts" type="number" class="form-control">
-                                </div>
+                               
                             </div>
 
                             <div class="text-end mt-3">
@@ -164,10 +160,14 @@
                                     <label class="form-label">Session Timeout (minutes)</label>
                                     <input id="session_timeout" type="number" class="form-control">
                                 </div>
+                                 <div class="col-md-6">
+                                    <label class="form-label">Max Login Attempts</label>
+                                    <input id="max_login_attempts" type="number" class="form-control">
+                                </div>
                             </div>
 
                             <div class="text-end mt-3">
-                                <button class="btn btn-primary" onclick="saveSecurity()">
+                                <button class="btn btn-primary" onclick="securityValidation(document.getElementById('max_login_attempts').value , document.getElementById('session_timeout').value);">
                                     <i class="fa fa-save me-1"></i> Save Security
                                 </button>
                             </div>
@@ -255,6 +255,29 @@ async function loadSettings() {
     });
 }
 
+function sectionToTag (section)
+{
+    switch (section) {
+        case 'companysettings':
+            return 'Company Settings';
+            break;
+        case 'billandtax':
+            return 'Bill & Tax';
+            break;
+        case 'userandrole':
+            return 'User & Role';
+            break;
+        case 'system':
+            return 'System';
+            break;
+        case 'security':
+            return 'Security';
+            break;
+        default:
+            break;
+    }
+}
+
 async function update(section, payload) {
     await fetch('/api/settings/update', {
         method: 'PUT',
@@ -265,7 +288,7 @@ async function update(section, payload) {
     }).then((data)=>{
         if (data.success)
         {
-            showToast(`${section} updated successfully` , "success");
+            showToast(`${sectionToTag(section)} updated successfully` , "success");
         } else
         {
             showToast(data.msg , "warning");
@@ -283,6 +306,36 @@ const saveCompany = () => update("companysettings", {
     address: address.value
 });
 
+function validateCompanyDetails(phone, gst, email) {
+    const errors = {};
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+        errors.phone = "Phone number must be a valid 10-digit number";
+    }
+
+    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    if (!gstRegex.test(gst)) {
+        errors.gst = "GST number must be a valid 15-character alphanumeric value";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(email)) {
+        errors.email = "Email address is not valid";
+    }
+
+
+    if(Object.keys(errors).length === 0)
+    {
+        saveCompany();
+    } else
+    {
+        const errorString = Object.values(errors).join("\n");
+        showToast(errorString , "warning");
+    }
+    
+
+}
+
 const saveBilling = () => update("billandtax", {
     default_tax: default_tax.value,
     invoice_prefix: invoice_prefix.value,
@@ -291,13 +344,23 @@ const saveBilling = () => update("billandtax", {
 });
 
 const saveUser = () => update("userandrole", {
-    role: role.value,
-    max_login_attempts: max_login_attempts.value
+    role: role.value
 });
 
 const saveSecurity = () => update("security", {
-    session_timeout: session_timeout.value
+    session_timeout: session_timeout.value,
+    max_login_attempts: max_login_attempts.value
 });
+
+const securityValidation= (max_login_attempts , session_timeout) => {
+    if(max_login_attempts < 3 || session_timeout < 15)
+    {
+        showToast("Max Attempt should be > 3 and Session Timeout should be > 15" , "warning");
+    } else
+    {
+        saveSecurity();
+    }
+}
 
 const saveSystem = () => update("system", {
     time_zone: time_zone.value

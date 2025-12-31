@@ -53,6 +53,11 @@ const updateUserController = async (req, res) => {
     try {
         const {id, fullname, email, role, password, status } = req.body;
 
+        if (role == 'admin')
+        {
+            return sendHttpResponse(res , 401 , false , "Operation is not permitted");
+        }
+
         const isEmailExist = await User.findOne({email});
 
 
@@ -112,6 +117,7 @@ const userStatusController = async (req, res) => {
         }
 
         user.status = !user.status;
+        user.maxLoginAttempts = 0;
         await user.save();
 
         return sendHttpResponse(

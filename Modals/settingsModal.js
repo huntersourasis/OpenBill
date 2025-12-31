@@ -28,10 +28,10 @@ const SettingsSchema = new mongoose.Schema({
 
     // User & Role
     role: String,
-    max_login_attempts: Number,
 
     // Security
     session_timeout: Number,
+    max_login_attempts: Number,
 
     // System
     time_zone: String

@@ -27,7 +27,11 @@ const UserSchema = new mongoose.Schema({
     },
     lastlogin : {
         type : String
-    }
+    },
+    maxLoginAttempts : {
+        type : Number,
+        default : 0
+    } 
 }); 
 
 const User = mongoose.model('users', UserSchema);

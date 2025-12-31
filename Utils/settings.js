@@ -18,7 +18,7 @@ const defaultBTM = {
 
 const defaultSECM = {
     section: "security",
-    session_timeout: 30, // minutes
+    session_timeout: 30, 
     max_login_attempts: 5
 };
 

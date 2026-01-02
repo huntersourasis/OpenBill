@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import loadSettings from '../Utils/loadSettings.js';
 
-const protect = (req, res, page) => {
+const protect = async (req, res, page) => {
     try {
         const token = req.cookies?.token;
 
@@ -12,12 +13,13 @@ const protect = (req, res, page) => {
                 content : "You do not have permission to view this page."              
             });
         }
-
+        const settings = await loadSettings();
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         return res.render(`pages/${page}`, {
             payload: decoded ,
-            navLink : page
+            navLink : page,
+            settings : settings
         });
 
     } catch (error) {

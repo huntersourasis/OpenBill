@@ -149,11 +149,19 @@ const readSKUController = async (req, res) => {
 
 const updateSKUController = async (req, res) => {
     try {
-        const {id , category, sku_prefix } = req.body;
+        const {id , sku_prefix } = req.body;
+
+        const getsku = await skuModal.findById(id);
+
+        const existingsku = getsku.sku_prefix;
+
+        await productsModal.updateMany({sku : existingsku},{
+            $set : {sku : sku_prefix}
+        },{ new: true, runValidators: true });
 
         const updated = await skuModal.findByIdAndUpdate(
             id,
-            { category, sku_prefix },
+            { sku_prefix },
             { new: true, runValidators: true }
         );
 

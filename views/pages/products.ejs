@@ -536,6 +536,34 @@
         });
     });
 
+    function editSkuRule(id, btn) {
+        const input2 = btn.closest("li").querySelector("#sku_perfix input");
+
+        if (input2.hasAttribute("readonly")) {
+            input2.removeAttribute("readonly");
+            input2.focus();
+            btn.innerHTML = `<i class="fa fa-save"></i>`;
+            btn.classList.replace("btn-outline-warning", "btn-outline-success");
+        } else {
+            fetch(`/api/products/sku/update/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id : id , sku_prefix: input2.value.toUpperCase() })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.msg, "success");
+                    callDB();
+                    input2.setAttribute("readonly", true);
+                    btn.innerHTML = `<i class="fa fa-edit"></i>`;
+                    btn.classList.replace("btn-outline-success", "btn-outline-warning");
+                } else {
+                    showToast(data.msg, "warning");
+                }
+            });
+        }
+    }
 
     function loadSkuRules() {
         fetch("/api/products/sku/read", {
@@ -557,12 +585,35 @@
             data.data.forEach(rule => {
                 skuRuleList.insertAdjacentHTML("beforeend", `
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        ${rule.category} → <strong>${rule.sku_prefix}</strong>
-                        <div class="btn-group">
+                        <div id="category">
+                        <input 
+                            type="text"
+                            class="form-control flex-grow-1 me-2"
+                            value="${rule.category}"
+                            readonly
+                        >
+                        </div>
+                        → <span class="me-2"></span>
+                        <div class="me-3" id="sku_perfix">
+                        <input 
+                            type="text"
+                            class="form-control flex-grow-1 me-2"
+                            value="${rule.sku_prefix}"
+                            id="sku_perfix"
+                            readonly
+                        > 
+                        </div>
+                        <div>
+                        <div class="btn-group ">
+                            <button class="btn btn-sm btn-outline-warning"
+                                onclick="editSkuRule('${rule._id}', this)">
+                                <i class="fa fa-edit"></i>
+                            </button>
                             <button class="btn btn-sm btn-outline-danger"
                                 onclick="deleteSkuRule('${rule._id}')">
                                 <i class="fa fa-trash"></i>
                             </button>
+                        </div>
                         </div>
                     </li>
                 `);

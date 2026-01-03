@@ -360,6 +360,16 @@
         deleteSkuRuleId = null;
         deleteProductId = null;
         deleteCategoryId = id;
+        document.querySelector("#confirmDeleteModal .modal-title")
+            .innerHTML = `<i class="fa fa-triangle-exclamation me-1"></i> Confirm Category Deletion`;
+
+        document.querySelector("#confirmDeleteModal .modal-body").innerHTML = `
+            <p class="mb-0">
+                This will permanently delete the category.
+                <br>
+                <strong>Products and Sku Rules using this category may be affected.</strong>
+            </p>
+        `;
         const modal = new bootstrap.Modal(
             document.getElementById("confirmDeleteModal")
         );

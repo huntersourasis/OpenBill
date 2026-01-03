@@ -659,6 +659,10 @@
             productTableBody.innerHTML = "";
 
             if (!data.success || !data.data.length) {
+                document.getElementById("totalProducts").innerHTML = 0;
+                document.getElementById("activeProducts").innerHTML = 0;
+                document.getElementById("outOfStock").innerHTML = 0;
+
                 productTableBody.innerHTML = `
                     <tr>
                         <td colspan="8" class="text-center text-muted">

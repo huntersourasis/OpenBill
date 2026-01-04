@@ -1,58 +1,59 @@
+<link rel="stylesheet" href="/css/sidebar.css">
 <aside class="d-none d-lg-flex flex-column bg-white border-end shadow-sm position-sticky top-0"
        style="width:240px; min-height:100vh;">
 
-    <div class="px-3 py-4 border-bottom">
-        <h6 class="mb-0 text-uppercase fw-semibold text-muted">Dashboard</h6>
+    <div class="px-3 py-4 border-bottom text-center">
+        <h6 class="mb-0 text-uppercase fw-semibold text-muted">Billing App</h6>
     </div>
 
     <ul class="nav nav-pills flex-column gap-1 p-3">
 
         <li class="nav-item">
-            <a href="/" class="nav-link <%= navLink === 'home' ? 'active' : 'text-dark' %>">
+            <a href="/" class="nav-link <%= navLink === 'home' ? 'active' : 'nav-link-color' %>">
                 <i class="fa fa-house me-2"></i> Home
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/invoice" class="nav-link <%= navLink === 'invoices' ? 'active' : 'text-dark' %>">
+            <a href="/pages/invoice" class="nav-link <%= navLink === 'invoices' ? 'active' : 'nav-link-color' %>">
                 <i class="fa fa-file-invoice me-2"></i> Invoices
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/customers" class="nav-link <%= navLink === 'customers' ? 'active' : 'text-dark' %>">
+            <a href="/pages/customers" class="nav-link <%= navLink === 'customers' ? 'active' : 'nav-link-color' %>">
                 <i class="fa fa-user-group me-2"></i> Customers
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/products" class="nav-link <%= navLink === 'products' ? 'active' : 'text-dark' %>">
+            <a href="/pages/products" class="nav-link <%= navLink === 'products' ? 'active' : 'nav-link-color' %>">
                 <i class="fa fa-box me-2"></i> Products
             </a>
         </li>
 
         <li class="nav-item">
-            <a href="/pages/payments" class="nav-link <%= navLink === 'payments' ? 'active' : 'text-dark' %>">
+            <a href="/pages/payments" class="nav-link <%= navLink === 'payments' ? 'active' : 'nav-link-color' %>">
                 <i class="fa fa-credit-card me-2"></i> Payments
             </a>
         </li>
         
         <% if (payload.role === 'admin') { %>
             <li class="nav-item">
-                <a href="/pages/users" class="nav-link <%= navLink === 'users' ? 'active' : 'text-dark' %>">
+                <a href="/pages/users" class="nav-link <%= navLink === 'users' ? 'active' : 'nav-link-color' %>">
                     <i class="fa fa-users me-2"></i> Users
                 </a>
             </li>
         <% } %>
 
         <li class="nav-item">
-            <a href="/pages/reports" class="nav-link <%= navLink === 'reports' ? 'active' : 'text-dark' %>">
+            <a href="/pages/reports" class="nav-link <%= navLink === 'reports' ? 'active' : 'nav-link-color' %>">
                 <i class="fa fa-chart-line me-2"></i> Reports
             </a>
         </li>
 
         <li class="nav-item mt-3 pt-3 border-top">
-            <a href="/pages/settings" class="nav-link <%= navLink === 'settings' ? 'active' : 'text-dark' %>">
+            <a href="/pages/settings" class="nav-link <%= navLink === 'settings' ? 'active' : 'nav-link-color' %>">
                 <i class="fa fa-gear me-2"></i> Settings
             </a>
         </li>

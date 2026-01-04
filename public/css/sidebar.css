@@ -1,0 +1,10 @@
+.sidebar {
+    background-color: #1e293b !important; 
+}
+.nav-link.active {
+    background-color: #639ef1 !important; 
+    border-radius: 8px;
+}
+.nav-link-color {
+    color : #1c2845;
+}

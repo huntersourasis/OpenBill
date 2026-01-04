@@ -1,5 +1,14 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 shadow-sm">
+ <style>
+    body {
+        background-color: #f1f5f9;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    }
+ </style>
+ <link rel="stylesheet" href="/css/tables.css">
+ <link rel="stylesheet" href="/css/nav.css">
+ <link rel="stylesheet" href="/css/cards.css">
+<nav class="navbar navbar-expand-lg  px-3 shadow-sm">
     <div class="container-fluid">
 
         <!-- Mobile Sidebar Toggle -->
@@ -13,13 +22,16 @@
 
         <!-- Brand / App Name -->
         <a class="navbar-brand fw-bold fs-5" href="/">
-            <%- include('./appName') %>
+            <img src="/images/openbill.png" 
+                 class="img-fluid" 
+                 style="max-height: 40px; width: auto;" 
+                 alt="OpenBill Logo">
         </a>
 
         <!-- Right Controls -->
         <div class="ms-auto">
             <button type="button"
-                    class="btn btn-outline-light btn-sm d-flex align-items-center gap-2"
+                    class="btn btn-outline-dark btn-sm d-flex align-items-center gap-2"
                     data-bs-toggle="modal"
                     data-bs-target="#logoutModal">
                 <i class="fa-solid fa-right-from-bracket"></i>

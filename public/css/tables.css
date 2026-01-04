@@ -1,0 +1,9 @@
+.table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    color: #475569;
+}
+.table td:nth-child(6) {
+    font-weight: 600;
+    color: #1e293b;
+}

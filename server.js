@@ -6,6 +6,7 @@ import pagesRouter from './Routers/pagesRouter.js';
 import userRouter from './Routers/userRouter.js';
 import settingsRouter from './Routers/settingsRouter.js';
 import productsRouter from './Routers/productsRouter.js';
+import customersRouter from './Routers/customersRouter.js';
 import cookieParser from 'cookie-parser';
 
 const server = express();
@@ -18,6 +19,7 @@ server.use("/pages" , pagesRouter);
 server.use("/api/users" , userRouter);
 server.use("/api/settings" , settingsRouter);
 server.use("/api/products" , productsRouter);
+server.use("/api/customers" , customersRouter);
 
 server.set("view engine" , "ejs");
 

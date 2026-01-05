@@ -74,11 +74,12 @@
 <div class="table-responsive">
 <table class="table table-hover align-middle">
 <thead class="table-light">
-<tr>
+<tr class="text-center">
     <th>#</th>
     <th>Name</th>
     <th>Category</th>
     <th>SKU</th>
+    <th>Warrranty(M)</th>
     <th>Price</th>
     <th>Tax (%)</th>
     <th>Stock</th>
@@ -752,11 +753,12 @@
             document.getElementById("outOfStock").innerHTML = outOfStock;
             data.data.forEach((p, i) => {
                 productTableBody.insertAdjacentHTML("beforeend", `
-                    <tr>
+                    <tr class='text-center'>
                         <td>${i + 1}</td>
                         <td>${p.name}</td>
                         <td>${p.category}</td>
                         <td>${p.sku}</td>
+                        <td>${p.warrantyMonths}</td>
                         <td>₹ ${p.price}</td>
                         <td>${p.tax} %</td>
                         <td>${p.stock} ${p.stock === 1 ? 'pc' : 'pcs'}</td>

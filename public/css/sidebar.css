@@ -5,6 +5,17 @@
     background-color: #639ef1 !important; 
     border-radius: 8px;
 }
+.nav-link {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.nav-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(199, 213, 233, 0.35);
+}
 .nav-link-color {
-    color : #1c2845;
+    color : #5c5e62;
+}
+
+.nav-link-color:hover {
+    color : #000000;
 }

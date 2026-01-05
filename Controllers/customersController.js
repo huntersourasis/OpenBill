@@ -1,5 +1,5 @@
 import customersModal from "../Modals/customersModal.js";
-
+import { sendHttpResponse } from "../Utils/httpResponse.js";
 const createCustomerController = async (req, res) => {
     try {
         const {
@@ -10,21 +10,23 @@ const createCustomerController = async (req, res) => {
             address
         } = req.body;
 
-        
         if (!name || !email || !primary_ph || !address) {
-            return res.status(400).json({
-                success: false,
-                message: "Required fields are missing"
-            });
+            return sendHttpResponse(
+                res,
+                400,
+                false,
+                "Required fields are missing"
+            );
         }
 
-        
         const isExist = await customersModal.findOne({ email });
         if (isExist) {
-            return res.status(409).json({
-                success: false,
-                message: "Customer with this email already exists"
-            });
+            return sendHttpResponse(
+                res,
+                409,
+                false,
+                "Customer with this email already exists"
+            );
         }
 
         const customer = await customersModal.create({
@@ -35,68 +37,92 @@ const createCustomerController = async (req, res) => {
             address
         });
 
-        return res.status(201).json({
-            success: true,
-            message: "Customer created successfully",
-            data: customer
-        });
+        return sendHttpResponse(
+            res,
+            201,
+            true,
+            "Customer created successfully",
+            customer
+        );
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error creating customer",
-            error: error.message
-        });
+        return sendHttpResponse(
+            res,
+            500,
+            false,
+            error.message
+        );
     }
 };
 
 
 const readCustomerController = async (req, res) => {
     try {
-        const { id } = req.body;
 
-        if (id) {
-            const customer = await customersModal.findById(id);
 
-            if (!customer) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Customer not found"
-                });
+        const customers = await customersModal
+            .find({ status: true })
+            .sort({ createdAt: -1 });
+
+        return sendHttpResponse(
+            res,
+            200,
+            true,
+            "Customers fetched successfully",
+            {
+                count: customers.length,
+                customers: customers
             }
-
-            return res.status(200).json({
-                success: true,
-                data: customer
-            });
-        }
-
-        const customers = await customersModal.find({ status: true }).sort({ createdAt: -1 });
-
-        return res.status(200).json({
-            success: true,
-            count: customers.length,
-            data: customers
-        });
+        );
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error fetching customer(s)",
-            error: error.message
-        });
+        return sendHttpResponse(
+            res,
+            500,
+            false,
+            "Error fetching customer(s)",
+            error.message
+        );
     }
 };
+
+const readOneCustomerController = async (req , res) => {
+    try {
+        const { id } = req.body;
+        if (id) {
+            const customer = await customersModal.findById(id);
+            if (!customer) {
+                return sendHttpResponse(
+                    res,
+                    404,
+                    false,
+                    "Customer not found"
+                );
+            }
+            return sendHttpResponse(
+                res,
+                200,
+                true,
+                "Customer fetched successfully",
+                customer
+            );
+        }
+    } catch (error) {
+        return sendHttpResponse(res , 500 , false , "Internal Error");
+    }
+}
 
 const updateCustomerController = async (req, res) => {
     try {
         const { id } = req.body;
 
         if (!id) {
-            return res.status(400).json({
-                success: false,
-                message: "Customer ID is required"
-            });
+            return sendHttpResponse(
+                res,
+                400,
+                false,
+                "Customer ID is required"
+            );
         }
 
         const updatedCustomer = await customersModal.findByIdAndUpdate(
@@ -109,36 +135,44 @@ const updateCustomerController = async (req, res) => {
         );
 
         if (!updatedCustomer) {
-            return res.status(404).json({
-                success: false,
-                message: "Customer not found"
-            });
+            return sendHttpResponse(
+                res,
+                404,
+                false,
+                "Customer not found"
+            );
         }
 
-        return res.status(200).json({
-            success: true,
-            message: "Customer updated successfully",
-            data: updatedCustomer
-        });
+        return sendHttpResponse(
+            res,
+            200,
+            true,
+            "Customer updated successfully",
+            updatedCustomer
+        );
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error updating customer",
-            error: error.message
-        });
+        return sendHttpResponse(
+            res,
+            500,
+            false,
+            error.message
+        );
     }
 };
+
 
 const deleteCustomerController = async (req, res) => {
     try {
         const { id } = req.body;
 
         if (!id) {
-            return res.status(400).json({
-                success: false,
-                message: "Customer ID is required"
-            });
+            return sendHttpResponse(
+                res,
+                400,
+                false,
+                "Customer ID is required"
+            );
         }
 
         const deletedCustomer = await customersModal.findByIdAndUpdate(
@@ -148,29 +182,37 @@ const deleteCustomerController = async (req, res) => {
         );
 
         if (!deletedCustomer) {
-            return res.status(404).json({
-                success: false,
-                message: "Customer not found"
-            });
+            return sendHttpResponse(
+                res,
+                404,
+                false,
+                "Customer not found"
+            );
         }
 
-        return res.status(200).json({
-            success: true,
-            message: "Customer deleted successfully"
-        });
+        return sendHttpResponse(
+            res,
+            200,
+            true,
+            "Customer deleted successfully"
+        );
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error deleting customer",
-            error: error.message
-        });
+        return sendHttpResponse(
+            res,
+            500,
+            false,
+            "Error deleting customer",
+            error.message
+        );
     }
 };
+
 
 export {
     createCustomerController,
     readCustomerController,
+    readOneCustomerController,
     updateCustomerController,
     deleteCustomerController
 };

@@ -1,4 +1,6 @@
 <link rel="stylesheet" href="/css/footer.css">
+
+<!-- Response Toast  -->
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
     <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -45,27 +47,4 @@
     </div>
 </footer>
 
-<script>
-    let toastInstance;
-
-    function showToast(message, type = "success") {
-        const toastEl = document.getElementById("appToast");
-        const toastBody = document.getElementById("toastBody");
-
-        const colorMap = {
-            success: "bg-success text-white",
-            error: "bg-danger text-white",
-            warning: "bg-warning text-dark",
-            info: "bg-primary text-white"
-        };
-
-        toastEl.className = `toast align-items-center border-0 ${colorMap[type] || colorMap.info}`;
-        toastBody.innerText = message;
-
-        if (!toastInstance) {
-            toastInstance = new bootstrap.Toast(toastEl, { delay: 3000 });
-        }
-
-        toastInstance.show();
-    }
-</script>
+<script src="/js/toast.js"></script>

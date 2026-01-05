@@ -413,35 +413,18 @@
             }).then((res)=>{
                 return res.json();
             }).then((data)=>{
-                const alert = document.querySelector(".c_alert");
-                const alertDiv = document.querySelector(".c_alert_div");
-                const alertRow = document.querySelector(".c_alert_row");
                 if(data.success)
-                {
-                    alertDiv.classList.remove("alert-warning");
-                    alertDiv.classList.add("alert-success");
-                    alertRow.classList.remove("display-none");
-                    alertRow.classList.add("display-block");
-                    alert.innerHTML = data.msg.toUpperCase();
-                    setTimeout(() => {
-                        alertRow.classList.remove("display-block");
-                        alertRow.classList.add("display-none");
-                        c_fullname.value = "";
-                        c_email.value = "";
-                        c_password.value = generatePassword(10);
-                        document.querySelector(".c_cancel").click();
-                    }, 1600); 
+                {   
+                    showToast(data.msg , "success");
+                    c_password.value = generatePassword(10);
+                    document.querySelector(".c_cancel").click();
                     showData();
                 } else
                 {
-                    alertDiv.classList.remove("alert-success");
-                    alertDiv.classList.add("alert-warning");
-                    alertRow.classList.remove("display-none");
-                    alertRow.classList.add("display-block");
-                    alert.innerHTML = data.msg.toUpperCase();
+                    showToast(data.msg , "warning");
                 }
             }).catch((err)=>{
-                alert(err);
+                showToast(err , "danger");
             })
         })
         
@@ -528,34 +511,19 @@
             }).then((res)=>{
                 return res.json();
             }).then((data)=>{
-                const alertRow = document.querySelector('.u_alert_row');
-                const alertDiv = document.querySelector('.u_alert_div');
-                const alert = document.querySelector('.u_alert');
                 if(data.success)
                 {
                     const modalEl = document.getElementById("updateUserModal");
                     const modal = bootstrap.Modal.getInstance(modalEl);
-                    alertRow.classList.remove('display-none');
-                    alertRow.classList.add('display-block');
-                    alertDiv.classList.remove("alert-warning");
-                    alertDiv.classList.add("alert-success");
-                    alert.innerHTML = data.msg.toUpperCase();
-                    setTimeout(()=>{
-                        alertRow.classList.remove("display-block");
-                        alertRow.classList.add("display-none");
-                        modal.hide();
-                    } , 1600);
+                    modal.hide();
+                    showToast(data.msg , "success");
                     showData();
                 } else
                 {
-                    alertRow.classList.remove('display-none');
-                    alertRow.classList.add('display-block');
-                    alertDiv.classList.remove("alert-success");
-                    alertDiv.classList.add("alert-warning");
-                    alert.innerHTML = data.msg.toUpperCase();
+                    showToast(data.msg , "warning");
                 }
             }).catch((err)=>{
-                alert(err);
+                showToast(data.msg , "danger");
             })
         })
 

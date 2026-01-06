@@ -8,7 +8,7 @@
   <%-  include('../components/cdns') %>
 </head>
 
-<body class="d-flex flex-column vh-100">
+<body class="d-flex flex-column vh-100 ">
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
   <div id="liveToastSuccess" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header bg-success text-light">
@@ -33,8 +33,8 @@
 </div>
 
   <%-  include('./navbar') %>
-
-  <main class="container my-5 flex-grow-1 overflow-hidden py-5">
+<div class="d-flex flex-grow-1 overflow-hidden">
+  <main class="container my-5 flex-grow-1  py-5">
     <h2 class="fw-bold text-secondary">Login</h2>
     <p class="text-muted">Welcome back to <%- include('../components/appName') %></p>
         <section class="row align-items-center g-5">
@@ -80,7 +80,7 @@
           </div>
         </section>
   </main>
-
+</div>
   <%-  include('../components/footer') %>
 <script>
 

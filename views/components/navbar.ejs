@@ -4,10 +4,23 @@
         background-color: #f1f5f9;
         font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     }
+    .loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
  </style>
  <link rel="stylesheet" href="/css/tables.css">
  <link rel="stylesheet" href="/css/nav.css">
  <link rel="stylesheet" href="/css/cards.css">
+ <div id="global-loader" class="loader-overlay d-none">
+    <div class="spinner-border text-primary" role="status"></div>
+</div>
 <nav class="navbar navbar-expand-lg  px-3 shadow-sm">
     <div class="container-fluid">
 
@@ -31,11 +44,11 @@
         <!-- Right Controls -->
         <div class="ms-auto">
             <button type="button"
-                    class="btn btn-outline-dark btn-sm d-flex align-items-center gap-2"
+                    class="btn btn-outline-dark btn-sm d-flex align-items-center gap-2 "
                     data-bs-toggle="modal"
                     data-bs-target="#logoutModal">
                 <i class="fa-solid fa-right-from-bracket"></i>
-                <span class="d-none d-sm-inline">Logout</span>
+                <span class="d-none d-sm-inline logout-text">Logout</span>
             </button>
         </div>
 

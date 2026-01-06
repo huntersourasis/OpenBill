@@ -31,6 +31,7 @@ const loginController = async (req , res)=>{
         if(isMatch)
         {
            const payload = {
+                id : isEmailExist._id,
                 fullname : isEmailExist.fullname,
                 email : isEmailExist.email,
                 role : isEmailExist.role

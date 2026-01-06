@@ -4,60 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoices</title>
+
     <%- include('../components/cdns') %>
+
+    <style>
+        /* View transition */
+        .view {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: all 0.35s ease;
+        }
+
+        .active-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .d-none {
+            display: none !important;
+        }
+        
+        @media (min-width: 992px) {
+            aside.d-none.d-lg-flex {
+                display: flex !important;
+            }
+            .logout-text {
+                display: block !important;
+            }
+        }
+    </style>
 </head>
+
 <body class="d-flex flex-column vh-100 body-color">
-    <%- include('../components/navbar') %>
+<%- include('../components/navbar') %>
 
-    <div class="d-flex flex-grow-1 overflow-hidden" >  
-        <%- include('../components/sidebar') %>
+<div class="d-flex flex-grow-1 overflow-hidden">
+    <%- include('../components/sidebar') %>
 
-        <main class="flex-grow-1 p-4 overflow-auto">
-            <div class="container-fluid">
-            
-                <!-- Page Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h4 class="fw-semibold mb-1">Create Invoice</h4>
-                        <p class="text-muted mb-0">Generate a new invoice for a customer</p>
-                    </div>
-                    <button class="btn btn-secondary">
-                        <i class="fa fa-arrow-left me-1"></i> Back
+    <main class="flex-grow-1 p-4 overflow-auto">
+        <div class="container-fluid">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-semibold mb-1" id="pageTitle">Create Invoice</h4>
+                    <p class="text-muted mb-0" id="pageSubtitle">
+                        Generate a new invoice for a customer
+                    </p>
+                </div>
+
+                <div class="btn-group shadow-sm">
+                    <button type="button" class="btn btn-primary active" id="btnCreateInvoice">
+                        <i class="fa fa-plus me-1"></i> Create Invoice
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" id="btnShowInvoices">
+                        <i class="fa fa-file-invoice me-1"></i> Show Invoices
                     </button>
                 </div>
-            
-                <form action="/invoices/create" method="POST">
-                
-                    <!-- Invoice & Customer Info -->
+            </div>
+
+            <div id="createInvoiceView" class="view active-view">
+                <form id="invoiceForm">
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body">
                             <h6 class="fw-semibold mb-3">Invoice Details</h6>
-                        
                             <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Invoice Number</label>
-                                    <input type="text" name="invoice_no" class="form-control" placeholder="INV-1001" required>
+                                <div class="col-md-1">
+                                    <label class="form-label">Prefix</label>
+                                    <input type="text" name="invoice_prefix" readonly class="form-control" required value="<%= settings.invoicePrefix %>">
                                 </div>
-                            
+                                <div class="col-md-3">
+                                    <label class="form-label">Invoice Number</label>
+                                    <input type="text" name="invoice_no" class="form-control" required>
+                                </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Invoice Date</label>
                                     <input type="date" name="invoice_date" class="form-control" required>
                                 </div>
-                            
                                 <div class="col-md-4">
                                     <label class="form-label">Due Date</label>
                                     <input type="date" name="due_date" class="form-control" required>
                                 </div>
-                            
                                 <div class="col-md-6">
                                     <label class="form-label">Customer</label>
                                     <select name="customer_id" class="form-select" required>
-                                        <option value="">Select Customer</option>
-                                        <option value="1">John Doe</option>
-                                        <option value="2">ABC Pvt Ltd</option>
+                                        <option value="">Loading customers...</option>
                                     </select>
                                 </div>
-                            
                                 <div class="col-md-6">
                                     <label class="form-label">Payment Status</label>
                                     <select name="status" class="form-select">
@@ -69,104 +101,459 @@
                             </div>
                         </div>
                     </div>
-                
-                    <!-- Invoice Items -->
+
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body">
                             <h6 class="fw-semibold mb-3">Invoice Items</h6>
-                        
                             <div class="table-responsive">
-                                <table class="table align-middle">
+                                <table class="table align-middle" id="itemsTable">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>Item</th>
-                                            <th width="120">Qty</th>
-                                            <th width="150">Rate</th>
-                                            <th width="150">Total</th>
-                                            <th width="50"></th>
-                                        </tr>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th width="120">Qty</th>
+                                        <th width="120">Stock</th>
+                                        <th width="150">Rate</th>
+                                        <th width="150">Total</th>
+                                        <th width="50"></th>
+                                    </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <input type="text" name="item_name[]" class="form-control" placeholder="Product / Service" required>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="quantity[]" class="form-control" min="1" value="1" required>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="price[]" class="form-control" step="0.01" required>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" placeholder="Auto" readonly>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-outline-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                    <tbody id="itemsTableBody">
+
                                     </tbody>
                                 </table>
                             </div>
-                        
-                            <button type="button" class="btn btn-outline-primary btn-sm">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="addItemBtn">
                                 <i class="fa fa-plus me-1"></i> Add Item
                             </button>
                         </div>
                     </div>
-                
-                    <!-- Invoice Summary -->
+
                     <div class="row">
                         <div class="col-lg-6 mb-4">
                             <div class="card border-0 shadow-sm h-100">
                                 <div class="card-body">
                                     <h6 class="fw-semibold mb-3">Notes</h6>
-                                    <textarea name="notes" class="form-control" rows="5" placeholder="Additional notes for the customer..."></textarea>
+                                    <textarea name="notes" class="form-control" rows="5"></textarea>
                                 </div>
                             </div>
                         </div>
-                    
+
                         <div class="col-lg-6 mb-4">
                             <div class="card border-0 shadow-sm h-100">
                                 <div class="card-body">
                                     <h6 class="fw-semibold mb-3">Invoice Summary</h6>
-                                
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Subtotal</span>
-                                        <strong>₹ 0.00</strong>
+                                        <strong class="invoice-subtotal">₹ 0.00</strong>
                                     </div>
-                                
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Tax (%)</span>
-                                        <input type="number" name="tax" class="form-control form-control-sm w-25" value="0">
+                                        <input type="number" name="tax" class="form-control form-control-sm w-25 text-end">
                                     </div>
-                                
                                     <hr>
-                                
                                     <div class="d-flex justify-content-between">
-                                        <span class="fw-semibold">Total Amount</span>
-                                        <span class="fw-bold fs-5">₹ 0.00</span>
+                                        <span class="fw-semibold">Total</span>
+                                        <span class="fw-bold fs-5 invoice-total">₹ 0.00</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                
-                    <!-- Actions -->
+
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="reset" class="btn btn-light">Reset</button>
+                        <button type="button" onclick="resetInvoice()" class="btn btn-light">Reset</button>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-save me-1"></i> Save Invoice
                         </button>
                     </div>
-                
                 </form>
             </div>
 
-        </main>
-    </div>
+            <div id="showInvoicesView" class="view d-none">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-semibold mb-0">All Invoices</h6>
+                            <input type="text" class="form-control form-control-sm w-25" placeholder="Search invoice...">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                <tr class="text-center">
+                                    <th>#</th>
+                                    <th>Invoice No</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="invoiceTable">
 
-    <%- include('../components/footer') %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<%- include('../components/footer') %>
+
+<script>
+function resetInvoice() {
+    invoiceForm.reset();
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelectorAll('input[type="date"]').forEach(input => input.value = today);
+    document.querySelector('[name="tax"]').value = "<%= settings.defaultTax %>";
+    itemsTableBody.innerHTML = "";
+    addNewRow();
+    updateSummary();
+    loadInvoiceTable();
+}
+    function getOrdinal(n) {
+        const s = ["th", "st", "nd", "rd"];
+        const v = n % 100;
+        return s[(v - 20) % 10] || s[v] || s[0];
+    }
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+
+        const day = date.getDate(); 
+
+        const month = date.toLocaleString('default', { month: 'short' }); 
+
+        const year = date.getFullYear(); 
+
+        return `${day}${getOrdinal(day)} ${month}, ${year}`;
+    }
+    const btnCreate = document.getElementById('btnCreateInvoice');
+    const btnShow = document.getElementById('btnShowInvoices');
+    const createView = document.getElementById('createInvoiceView');
+    const showView = document.getElementById('showInvoicesView');
+    const title = document.getElementById('pageTitle');
+    const subtitle = document.getElementById('pageSubtitle');
+    const invoiceForm = document.getElementById('invoiceForm');
+    const itemsTableBody = document.getElementById('itemsTableBody');
+    const addItemBtn = document.getElementById('addItemBtn');
+
+    let globalProducts = [];
+    let selectedProducts = [];
+
+    // View Switching
+    function switchView(showCreate) {
+        if (showCreate) {
+            showView.classList.add('d-none');
+            createView.classList.remove('d-none');
+            setTimeout(() => { createView.classList.add('active-view'); showView.classList.remove('active-view'); }, 10);
+            btnCreate.className = 'btn btn-primary active';
+            btnShow.className = 'btn btn-outline-primary';
+            title.innerText = 'Create Invoice';
+            subtitle.innerText = 'Generate a new invoice for a customer';
+        } else {
+            createView.classList.add('d-none');
+            showView.classList.remove('d-none');
+            setTimeout(() => { showView.classList.add('active-view'); createView.classList.remove('active-view'); }, 10);
+            btnShow.className = 'btn btn-primary active';
+            btnCreate.className = 'btn btn-outline-primary';
+            title.innerText = 'Invoices';
+            subtitle.innerText = 'View and manage all generated invoices';
+        }
+    }
+
+    btnCreate.addEventListener('click', () => switchView(true));
+    btnShow.addEventListener('click', () => switchView(false));
+
+    // Fetch Initial Data
+    async function initializeData() {
+        try {
+            const [custRes, prodRes] = await Promise.all([
+                fetch('/api/customers/read', { method: "POST", headers: { "Content-Type": "application/json" } }),
+                fetch('/api/products/read', { method: "POST", headers: { "Content-Type": "application/json" } })
+            ]);
+
+            const customersData = await custRes.json();
+            const productsData = await prodRes.json();
+
+            const customers = customersData.data.customers || [];
+            globalProducts = productsData.data || [];
+
+            const customerSelect = document.querySelector('select[name="customer_id"]');
+            customerSelect.innerHTML = '<option value="">Select Customer</option>';
+            customers.forEach(c => {
+                customerSelect.innerHTML += `<option value="${c._id}">${c.name} (${c.email})</option>`;
+            });
+
+
+            addNewRow();
+
+        } catch (err) {
+            console.error("Error loading initial data:", err);
+            showToast("Failed to load customer/product data." , "danger");
+        }
+    }
+
+    // Row Management
+// Row Management
+function addNewRow() {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>
+            <select name="product_id[]" class="form-select product-select" required>
+                </select>
+            <input type="hidden" name="item_name[]">
+        </td>
+        <td><input type="number" name="quantity[]" class="form-control" min="1" value="1"></td>
+        <td><input type="number" readonly name="stock[]" class="form-control" min="0" ></td>
+        <td><input type="number" name="price[]" class="form-control" step="0.01" value="0"></td>
+        <td><input type="text" class="form-control row-total" readonly value="0.00"></td>
+        <td><button type="button" class="btn btn-sm btn-outline-danger remove-item"><i class="fa fa-trash"></i></button></td>
+    `;
+    itemsTableBody.appendChild(row);
+    updateAllDropdowns();
+}
+
+    function updateAllDropdowns() {
+        const allSelects = document.querySelectorAll('.product-select');
+        const currentlySelectedIds = Array.from(allSelects)
+            .map(select => select.value)
+            .filter(id => id !== "");
+
+        allSelects.forEach(select => {
+            const currentValue = select.value;
+
+            let html = '<option value="">Select Product</option>';
+
+            globalProducts.forEach(p => {
+                const isSelectedElsewhere = currentlySelectedIds.includes(p._id) && p._id !== currentValue;
+
+                if (!isSelectedElsewhere) {
+                    html += `<option value="${p._id}" 
+                                data-price="${p.price}" 
+                                data-stock="${p.stock}" 
+                                ${p._id === currentValue ? 'selected' : ''}>
+                                ${p.category} → ${p.name} → ${p.sku}
+                             </option>`;
+                }
+            });
+
+            select.innerHTML = html;
+        });
+    }
+    addItemBtn.addEventListener('click', addNewRow);
+
+    itemsTableBody.addEventListener('click', (e) => {
+        if (e.target.closest('.remove-item')) {
+            if (itemsTableBody.rows.length > 1) {
+                e.target.closest('tr').remove();
+                updateSummary();
+                updateAllDropdowns();
+            }
+        }
+    });
+
+    itemsTableBody.addEventListener('change', (e) => {
+        if (e.target.classList.contains('product-select')) {
+            const row = e.target.closest('tr');
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            const price = selectedOption.dataset.price || 0;
+            const stock = selectedOption.dataset.stock || 0;
+            
+            row.querySelector('[name="price[]"]').value = price;
+            row.querySelector('[name="stock[]"]').value = stock;
+            row.querySelector('[name="item_name[]"]').value = selectedOption.text;
+            calculateRowTotal(row);
+            updateAllDropdowns();
+        }
+    });
+
+    itemsTableBody.addEventListener('input', (e) => {
+        if (e.target.name === 'quantity[]') {
+            const row = e.target.closest('tr');
+            const productSelect = row.querySelector('.product-select');
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
+            const stock = Number(selectedOption.dataset.stock || 0);
+            let quantity = Number(e.target.value);
+            if (quantity > stock) {
+                e.target.value = stock;
+                if (typeof showToast === 'function') {
+                    showToast(`Maximum Stock available is ${stock}`, "warning");
+                } else {
+                    showToast(`Maximum Stock available is ${stock}` , "warning");
+                }
+            }
+            calculateRowTotal(row);
+        }
+    });
+
+    itemsTableBody.addEventListener('input', (e) => {
+        if (e.target.name === 'quantity[]' || e.target.name === 'price[]') {
+            calculateRowTotal(e.target.closest('tr'));
+        }
+    });
+
+    function calculateRowTotal(row) {
+        const qty = Number(row.querySelector('[name="quantity[]"]').value || 0);
+        const price = Number(row.querySelector('[name="price[]"]').value || 0);
+        const total = qty * price;
+        row.querySelector('.row-total').value = total.toFixed(2);
+        updateSummary();
+
+    }
+
+    function updateSummary() {
+        let subtotal = 0;
+        document.querySelectorAll('.row-total').forEach(input => {
+            subtotal += Number(input.value || 0);
+        });
+
+        const taxPercent = Number(document.querySelector('[name="tax"]').value || 0);
+        const taxAmount = subtotal * (taxPercent / 100);
+        const total = subtotal + taxAmount;
+
+        document.querySelector('.invoice-subtotal').innerText = `₹ ${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+        document.querySelector('.invoice-total').innerText = `₹ ${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+    }
+
+    document.querySelector('[name="tax"]').addEventListener('input', updateSummary);
+
+
+        invoiceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const productIds = document.getElementsByName('product_id[]');
+            const names = document.getElementsByName('item_name[]');
+            const qtys = document.getElementsByName('quantity[]');
+            const prices = document.getElementsByName('price[]');
+
+            const items = [];
+            for (let i = 0; i < productIds.length; i++) {
+                if (!productIds[i].value) continue;
+                items.push({
+                    product_id: productIds[i].value,
+                    name: names[i].value,
+                    quantity: Number(qtys[i].value),
+                    rate: Number(prices[i].value)
+                });
+            }
+
+            if (items.length === 0) {
+                showToast("Please add at least one product to the invoice." , "warning");
+                return;
+            }
+
+            const payload = {
+                inv_number: "<%= settings.invoicePrefix %>" + invoiceForm.invoice_no.value,
+                inv_date: invoiceForm.invoice_date.value,
+                due_date: invoiceForm.due_date.value,
+                customer_id: invoiceForm.customer_id.value,
+                status: invoiceForm.status.value,
+                tax_percent: Number(invoiceForm.tax.value || 0),
+                notes: invoiceForm.notes.value,
+                items: items,
+                created_by : "<%= payload.id %>"
+            };
+
+            try {
+                const response = await fetch('/api/invoices/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Invoice Created Successfully!' , "success");
+                    setTimeout(()=>{
+                        resetInvoice();
+                    } , 1000);
+                } else {
+                    showToast('Error: ' + (result.message || 'Submission failed') , "warning");
+                }
+            } catch (error) {
+                console.error("Submission Error:", error);
+                showToast('A server error occurred.' , "danger");
+            }
+        });
+
+        function loadInvoiceTable() {
+        const invoiceTableBody = document.getElementById("invoiceTable");
+
+        invoiceTableBody.innerHTML = '<tr><td colspan="7" class="text-center">Loading invoices...</td></tr>';
+
+        fetch("/api/invoices/read", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch invoices");
+            return res.json();
+        })
+        .then(result => {
+            invoiceTableBody.innerHTML = "";
+
+            const invoices = result.data || [];
+
+            if (invoices.length === 0) {
+                invoiceTableBody.innerHTML = '<tr><td colspan="7" class="text-center">No invoices found.</td></tr>';
+                return;
+            }
+
+            invoices.forEach((inv, i) => {
+                const date = inv.inv_date ? new Date(inv.inv_date).toLocaleDateString() : 'N/A';
+
+                const customerName = (inv.customer_id && inv.customer_id.name) 
+                                     ? inv.customer_id.name 
+                                     : (inv.customer_id || "Unknown");
+
+                const statusClass = inv.status === 'paid' ? 'bg-success' : 
+                                    inv.status === 'pending' ? 'bg-warning text-dark' : 'bg-danger';
+
+                const row = `
+                    <tr class='text-center'>
+                        <td>${i + 1}</td>    
+                        <td><strong>${inv.inv_number}</strong></td>    
+                        <td>${customerName}</td>    
+                        <td>${formatDate(date)}</td>
+                        <td class="fw-bold">₹ ${Number(inv.total_amount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>    
+                        <td><span class="badge ${statusClass}">${inv.status.toUpperCase()}</span></td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <button onclick="viewInvoice('${inv._id}')" class="btn btn-outline-secondary"><i class="fa fa-eye"></i></button>
+                                <button onclick="printInvoice('${inv._id}')" class="btn btn-outline-success"><i class="fa fa-print"></i></button>
+                                <button onclick="editInvoice('${inv._id}')" class="btn btn-outline-warning"><i class="fa fa-edit"></i></button>
+                                <button onclick="deleteInvoice('${inv._id}')" class="btn btn-outline-danger"><i class="fa fa-trash"></i></button>
+                            </div>
+                        </td>    
+                    </tr>
+                `;
+                invoiceTableBody.insertAdjacentHTML('beforeend', row);
+            });
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            invoiceTableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error: ${err.message}</td></tr>`;
+        });
+    }
+    function viewInvoice(id)
+    {
+        window.open(`/views/invoice/${id}` , "_blank");
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelectorAll('input[type="date"]').forEach(input => input.value = today);
+        document.querySelector('[name="tax"]').value = "<%= settings.defaultTax %>";
+        initializeData();
+        loadInvoiceTable();
+    });
+</script>
+
 </body>
 </html>

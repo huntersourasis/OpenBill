@@ -871,7 +871,7 @@ async function updateEditedInvoice() {
 
     function viewInvoice(id)
     {
-        window.open(`/views/invoice/${id}` , "_blank");
+        window.open(`/api/invoices/view/?id=${id}` , "_blank");
     }
     const searchInput = document.getElementById("searchInput");
     searchInput.addEventListener("keyup", () => {

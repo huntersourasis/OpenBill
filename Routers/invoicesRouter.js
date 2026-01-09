@@ -1,5 +1,5 @@
 import express from 'express';
-import { createInvoiceController , readInvoiceController , readOneInvoiceController , updateInvoiceController , deleteInvoiceController } from '../Controllers/invoicesController.js';
+import { createInvoiceController , readInvoiceController , readOneInvoiceController , updateInvoiceController , deleteInvoiceController , viewInvoiceController} from '../Controllers/invoicesController.js';
 const invoicesRouter = express.Router();
 
 invoicesRouter
@@ -7,6 +7,7 @@ invoicesRouter
     .post("/read" , readInvoiceController)
     .post("/read-one" , readOneInvoiceController)
     .post("/update" , updateInvoiceController)
-    .post("/delete" , deleteInvoiceController);
+    .post("/delete" , deleteInvoiceController)
+    .get("/view" , viewInvoiceController);
 
 export default invoicesRouter;

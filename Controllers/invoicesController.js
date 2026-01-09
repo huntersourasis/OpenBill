@@ -1,4 +1,5 @@
 import invoiceModel from "../Modals/invoicesModal.js";
+import { sendHttpResponse } from "../Utils/httpResponse.js";
 
 const createInvoiceController = async (req, res) => {
     try {
@@ -14,8 +15,8 @@ const createInvoiceController = async (req, res) => {
             created_by
         } = req.body;
 
-        if (!inv_number || !customer_id || !items || items.length === 0) {
-            return res.status(400).json({ success: false, message: "Missing required fields" });
+        if (!inv_number || !customer_id || !items || items.length === 0 || !status) {
+            return sendHttpResponse(res , 400 , false , "Missing required fields");
         }
 
         let subtotal = 0;
@@ -40,7 +41,7 @@ const createInvoiceController = async (req, res) => {
             inv_date: inv_date || new Date(),
             due_date,
             customer_id,       
-            payment_status: status || "pending",
+            status: status || "pending",
             items: processedItems,
             subtotal,
             tax_percent,
@@ -50,15 +51,11 @@ const createInvoiceController = async (req, res) => {
             created_by 
         });
 
-        res.status(201).json({
-            success: true,
-            message: "Invoice saved successfully",
-            data: newInvoice
-        });
+        return sendHttpResponse(res , 201 , true , "Invoice saved successfully");
 
     } catch (error) {
         console.error("SERVER ERROR:", error);
-        res.status(500).json({ success: false, message: error.message });
+        return sendHttpResponse(res , 500 , false , error.message);
     }
 };
 
@@ -69,116 +66,104 @@ const readInvoiceController = async (req, res) => {
             .find()
             .populate("customer_id", "name") 
             .sort({ createdAt: -1 });
-
-        return res.status(200).json({
-            success: true,
-            data: invoices
-        });
+        return sendHttpResponse(res , 200 , true , "Data fetched successfully" , invoices);
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return sendHttpResponse(res , 500 , false , error.message)
     }
 };
 
 
 const readOneInvoiceController = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.body;
 
-        const invoice = await invoiceModel.findById(id);
+    const invoice = await invoiceModel
+      .findById(id)
+      .populate({
+        path: "customer_id",
+        select: "name"
+      });
 
-        if (!invoice) {
-            return res.status(404).json({
-                success: false,
-                message: "Invoice not found"
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            data: invoice
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
+    if (!invoice) {
+      return sendHttpResponse(res, 404, false, "Invoice not found");
     }
+
+    return sendHttpResponse(
+      res,
+      200,
+      true,
+      "Invoice fetched successfully",
+      invoice
+    );
+
+  } catch (error) {
+    return sendHttpResponse(res, 500, false, error.message);
+  }
 };
 
-
 const updateInvoiceController = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updateData = req.body;
+  try {
+    const {id , updateData} = req.body;
 
-        if (updateData.items?.length) {
-            let subtotal = 0;
-            updateData.items.forEach(item => {
-                item.amount = item.quantity * item.rate;
-                subtotal += item.amount;
-            });
+    if (updateData.items?.length) {
+      let subtotal = 0;
+      updateData.items.forEach(item => {
+        item.amount = Number(item.quantity) * Number(item.rate);
+        subtotal += item.amount;
+      });
 
-            const tax_percent = updateData.tax_percent || 0;
-            const tax_amount = (subtotal * tax_percent) / 100;
+      const tax_percent = updateData.tax_percent || 0;
+      const tax_amount = (subtotal * tax_percent) / 100;
 
-            updateData.subtotal = subtotal;
-            updateData.tax_amount = tax_amount;
-            updateData.total_amount = subtotal + tax_amount;
-        }
-
-        const updatedInvoice = await invoiceModel.findByIdAndUpdate(
-            id,
-            updateData,
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedInvoice) {
-            return res.status(404).json({
-                success: false,
-                message: "Invoice not found"
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Invoice updated successfully",
-            data: updatedInvoice
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
+      updateData.subtotal = subtotal;
+      updateData.tax_amount = tax_amount;
+      updateData.total_amount = subtotal + tax_amount;
     }
+
+    const updatedInvoice = await invoiceModel.findByIdAndUpdate(
+      id,
+      updateData,
+      {runValidators: true }
+    );
+
+    if (!updatedInvoice) {
+      return sendHttpResponse(res, 404, false, "Invoice not found");
+    }
+
+    return sendHttpResponse(
+      res,
+      200,
+      true,
+      "Invoice updated successfully",
+      updatedInvoice
+    );
+
+  } catch (error) {
+    return sendHttpResponse(res, 500, false, error.message);
+  }
 };
 
 
 const deleteInvoiceController = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.body;
 
-        const deleted = await invoiceModel.findByIdAndDelete(id);
+    const deleted = await invoiceModel.findByIdAndDelete(id);
 
-        if (!deleted) {
-            return res.status(404).json({
-                success: false,
-                message: "Invoice not found"
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Invoice deleted successfully"
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
+    if (!deleted) {
+      return sendHttpResponse(res, 404, false, "Invoice not found");
     }
+
+    return sendHttpResponse(
+      res,
+      200,
+      true,
+      "Invoice deleted successfully"
+    );
+
+  } catch (error) {
+    return sendHttpResponse(res, 500, false, error.message);
+  }
 };
 
 

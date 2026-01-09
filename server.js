@@ -8,12 +8,19 @@ import settingsRouter from './Routers/settingsRouter.js';
 import productsRouter from './Routers/productsRouter.js';
 import customersRouter from './Routers/customersRouter.js';
 import invoicesRouter from './Routers/invoicesRouter.js';
+import counterRouter from './Routers/counterRouter.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 const server = express();
 server.use(express.static('public'));
 server.use(express.json());
 server.use(cookieParser());
+server.use(cors({
+  origin: true,        
+  credentials: true
+}));
+
 server.use("/" , mainRouter);
 server.use("/auth" , authRouter );
 server.use("/pages" , pagesRouter);
@@ -22,6 +29,7 @@ server.use("/api/settings" , settingsRouter);
 server.use("/api/products" , productsRouter);
 server.use("/api/customers" , customersRouter);
 server.use("/api/invoices" , invoicesRouter);
+server.use("/api/counter" , counterRouter);
 
 server.set("view engine" , "ejs");
 

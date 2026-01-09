@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Invoice Number</label>
-                                    <input type="text" name="invoice_no" class="form-control" required>
+                                    <input type="text" name="invoice_no" class="form-control" readonly required>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Invoice Date</label>
@@ -174,7 +174,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-semibold mb-0">All Invoices</h6>
-                            <input type="text" class="form-control form-control-sm w-25" placeholder="Search invoice...">
+                            <input type="text" class="form-control form-control-sm w-25" id="searchInput" placeholder="Search invoice">
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
@@ -201,16 +201,165 @@
         </div>
     </main>
 </div>
+<!-- Edit Invoice Modal -->
+<div class="modal fade" id="editInvoiceModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Invoice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="editInvoiceForm">
+                    <input type="hidden" name="invoice_id"> 
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Customer Name</label>
+                            <input type="text" name="name" class="form-control bg-light" readonly> 
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Invoice Number</label>
+                            <input type="text" name="inv_number" class="form-control bg-light" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Invoice Date</label>
+                            <input type="date" name="inv_date" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" name="due_date" class="form-control"> 
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select"> 
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                                <option value="overdue">Overdue</option>
+                                <option value="cancelled">Cancelled</option> 
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-semibold mb-0">Invoice Items</h6>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addEditRow()"> 
+                            <i class="fa fa-plus me-1"></i> Add Item
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th width="120">Qty</th>
+                                    <th width="120">Stock</th> 
+                                    <th width="150">Rate</th>
+                                    <th width="150">Total</th>
+                                    <th width="50"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="editItemsBody"></tbody> 
+                        </table>
+                    </div>
+
+                    <div class="row mt-4 justify-content-end">
+                        <div class="col-md-4">
+                            <div class="card bg-light border-0">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-muted">Tax (%)</span>
+                                        <input type="number" id="editTaxPercent" class="form-control form-control-sm w-50 text-end" oninput="updateEditSummary()"> 
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">Grand Total</span>
+                                        <span class="fw-bold text-primary fs-5">₹ <span id="editInvoiceTotal">0.00</span></span> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateEditedInvoice()"> 
+                    <i class="fa fa-save me-1"></i> Update Invoice
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete Invoice Modal -->
+<div class="modal fade" id="deleteInvoiceModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">Delete Invoice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-0">
+                    Are you sure you want to permanently delete this invoice?
+                </p>
+                <input type="hidden" id="deleteInvoiceId">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDeleteInvoice()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <%- include('../components/footer') %>
 
 <script>
+function loadInvoice()
+{
+    fetch("/api/counter/load-invoice" , {
+        method : "POST"
+    }).then((res)=>{
+        return res.json()
+    }).then((data)=>{
+        invoiceForm.invoice_no.value = data.data.inv_number;
+    }).catch((err)=>{   
+        showToast(err , "danger");
+    })
+}
+function updateInvoice ()
+{
+    fetch("/api/counter/update-invoice" , {
+        method : "POST"
+    }).then((res)=>{
+        return res.json();
+    }).then((data)=>{
+        if(!data.success) {
+            showToast(err , "danger");
+        }
+    }).catch((err)=>{
+        showToast(err , "danger");
+    })
+}
+
 function resetInvoice() {
     invoiceForm.reset();
     const today = new Date().toISOString().split('T')[0];
     document.querySelectorAll('input[type="date"]').forEach(input => input.value = today);
     document.querySelector('[name="tax"]').value = "<%= settings.defaultTax %>";
     itemsTableBody.innerHTML = "";
+    loadInvoice();
     addNewRow();
     updateSummary();
     loadInvoiceTable();
@@ -381,9 +530,9 @@ function addNewRow() {
             if (quantity > stock) {
                 e.target.value = stock;
                 if (typeof showToast === 'function') {
-                    showToast(`Maximum Stock available is ${stock}`, "warning");
+                    showToast(`Maximum available stock is ${stock}`, "warning");
                 } else {
-                    showToast(`Maximum Stock available is ${stock}` , "warning");
+                    showToast(`Maximum available stock is ${stock}` , "warning");
                 }
             }
             calculateRowTotal(row);
@@ -447,7 +596,7 @@ function addNewRow() {
             }
 
             const payload = {
-                inv_number: "<%= settings.invoicePrefix %>" + invoiceForm.invoice_no.value,
+                inv_number: "<%= settings.invoicePrefix %>" + "-" + invoiceForm.invoice_no.value,
                 inv_date: invoiceForm.invoice_date.value,
                 due_date: invoiceForm.due_date.value,
                 customer_id: invoiceForm.customer_id.value,
@@ -469,6 +618,7 @@ function addNewRow() {
 
                 if (result.success) {
                     showToast('Invoice Created Successfully!' , "success");
+                    updateInvoice();
                     setTimeout(()=>{
                         resetInvoice();
                     } , 1000);
@@ -542,11 +692,212 @@ function addNewRow() {
             invoiceTableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error: ${err.message}</td></tr>`;
         });
     }
+
+function addEditRow(item = null) {
+    const tbody = document.getElementById("editItemsBody");
+    const row = document.createElement('tr');
+    
+    let options = globalProducts.map(p => 
+        `<option value="${p._id}" data-price="${p.price}" data-stock="${p.stock}" ${item && item.product_id === p._id ? 'selected' : ''}>
+            ${p.name} (${p.sku})
+        </option>`
+    ).join('');
+
+    row.innerHTML = `
+        <td>
+            <select class="form-select form-select-sm edit-product-select">
+                <option value="">Select</option>
+                ${options}
+            </select>
+        </td>
+        <td><input type="number" class="form-control form-control-sm edit-qty" min="1" value="${item ? item.quantity : 1}"></td>
+        <td><input type="number" class="form-control form-control-sm edit-stock bg-light" readonly value="${item ? (globalProducts.find(p=>p._id === item.product_id)?.stock || 0) : 0}"></td>
+        <td><input type="number" class="form-control form-control-sm edit-rate" value="${item ? item.rate : 0}"></td>
+        <td class="edit-row-total">₹ ${(item ? item.quantity * item.rate : 0).toFixed(2)}</td>
+        <td><button type="button" class="btn btn-sm text-danger" onclick="
+        if (countEditItemsRow() > 1) {
+            this.closest('tr').remove();
+            updateEditSummary();
+        } else {
+            showToast('There should be at least one item', 'warning');
+        }
+        "><i class="fa fa-trash"></i></button></td>
+    `;
+    tbody.appendChild(row);
+
+    row.addEventListener('input', (e) => {
+        const qtyInput = row.querySelector('.edit-qty');
+        const stockInput = row.querySelector('.edit-stock');
+        const productSelect = row.querySelector('.edit-product-select');
+        
+        if (e.target.classList.contains('edit-product-select')) {
+            const opt = productSelect.options[productSelect.selectedIndex];
+            const stock = Number(opt.dataset.stock || 0);
+            row.querySelector('.edit-rate').value = opt.dataset.price || 0;
+            stockInput.value = stock;
+        }
+
+        if (e.target.classList.contains('edit-qty')) {
+            const maxStock = Number(stockInput.value);
+            if (Number(qtyInput.value) > maxStock) {
+                qtyInput.value = maxStock;
+                showToast(`Maximum available stock is ${maxStock}`, "warning");
+            }
+        }
+        
+        updateEditSummary();
+    });
+}
+function updateEditSummary() {
+    let subtotal = 0;
+    document.querySelectorAll('#editItemsBody tr').forEach(row => {
+        const qty = row.querySelector('.edit-qty').value;
+        const rate = row.querySelector('.edit-rate').value;
+        const total = qty * rate;
+        row.querySelector('.edit-row-total').innerText = `₹ ${total.toFixed(2)}`;
+        subtotal += total;
+    });
+    
+    const tax = document.getElementById('editTaxPercent').value || 0;
+    const finalTotal = subtotal + (subtotal * tax / 100);
+    document.getElementById("editInvoiceTotal").innerText = finalTotal.toLocaleString('en-IN');
+}
+
+async function editInvoice(id) {
+    try {
+        const res = await fetch(`/api/invoices/read-one/`, { 
+            method: "POST", 
+            headers: {"Content-Type": "application/json"}, 
+            body: JSON.stringify({ id }) 
+        });
+        const result = await res.json();
+        const inv = result.data;
+
+        const form = document.getElementById("editInvoiceForm");
+        form.invoice_id.value = inv._id;
+        form.inv_number.value = inv.inv_number;
+        form.name.value = inv.customer_id.name;
+        form.status.value = inv.status;
+        
+        form.inv_date.value = inv.inv_date ? new Date(inv.inv_date).toISOString().split('T')[0] : "";
+        form.due_date.value = inv.due_date ? new Date(inv.due_date).toISOString().split('T')[0] : "";
+
+        document.getElementById('editTaxPercent').value = inv.tax_percent;
+        document.getElementById("editItemsBody").innerHTML = "";
+        inv.items.forEach(item => addEditRow(item));
+        updateEditSummary();
+
+        new bootstrap.Modal(document.getElementById("editInvoiceModal")).show();
+    } catch (err) {
+        showToast("Error loading invoice", "danger");
+    }
+}
+
+async function updateEditedInvoice() {
+    const form = document.getElementById("editInvoiceForm");
+    const rows = document.querySelectorAll("#editItemsBody tr");
+    const items = [];
+
+    rows.forEach(row => {
+        const select = row.querySelector(".edit-product-select");
+        if (select.value) {
+            items.push({
+                product_id: select.value,
+                name: select.options[select.selectedIndex].text,
+                quantity: Number(row.querySelector(".edit-qty").value),
+                rate: Number(row.querySelector(".edit-rate").value)
+            });
+        }
+    });
+
+    try {
+        const res = await fetch("/api/invoices/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: form.invoice_id.value,
+                updateData: {
+                    items: items,
+                    status: form.status.value,
+                    inv_date: form.inv_date.value, 
+                    due_date: form.due_date.value,  
+                    tax_percent: Number(document.getElementById('editTaxPercent').value)
+                }
+            })
+        });
+        const result = await res.json();
+        if (!result.success) throw new Error(result.message);
+
+        showToast("Invoice updated successfully", "success");
+        bootstrap.Modal.getInstance(document.getElementById("editInvoiceModal")).hide();
+        loadInvoiceTable();
+    } catch (err) {
+        showToast(err.message, "danger");
+    }
+}
+
+    function deleteInvoice(id) {
+        document.getElementById("deleteInvoiceId").value = id;
+        new bootstrap.Modal(document.getElementById("deleteInvoiceModal")).show();
+    }
+
+    async function confirmDeleteInvoice() {
+        const id = document.getElementById("deleteInvoiceId").value;
+
+        try {
+            const res = await fetch(`/api/invoices/delete/`, {
+                method: "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                } ,
+                body : JSON.stringify({
+                    id : id
+                })
+            });
+            const result = await res.json();
+            if (!result.success) throw new Error(result.message);
+
+            showToast("Invoice deleted successfully", "success");
+            bootstrap.Modal.getInstance(
+                document.getElementById("deleteInvoiceModal")
+            ).hide();
+
+            loadInvoiceTable();
+        } catch (err) {
+            showToast(err.message, "danger");
+        }
+    }
+
+
     function viewInvoice(id)
     {
         window.open(`/views/invoice/${id}` , "_blank");
     }
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("keyup", () => {
+        const filter = searchInput.value.toLowerCase();
+        const rows = document.querySelectorAll("#invoiceTable tr");
+        rows.forEach(row => {
+            if (row.children.length < 2) return;
+            const inv_no = row.children[1].innerText.toLowerCase();
+            const name = row.children[2].innerText.toLowerCase();
+            const date = row.children[3].innerText.toLowerCase();
+            const amount = row.children[4].innerText.toLowerCase();
+            if (inv_no.includes(filter) || name.includes(filter) || date.includes(filter) || amount.includes(filter)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+    function countEditItemsRow()
+    {
+        const invoiceTable = document.getElementById("editItemsBody");
+        const rows = invoiceTable.rows.length;
+        return rows;
+    }
     document.addEventListener('DOMContentLoaded', () => {
+        loadInvoice();
         const today = new Date().toISOString().split('T')[0];
         document.querySelectorAll('input[type="date"]').forEach(input => input.value = today);
         document.querySelector('[name="tax"]').value = "<%= settings.defaultTax %>";

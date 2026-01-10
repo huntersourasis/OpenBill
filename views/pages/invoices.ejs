@@ -162,6 +162,9 @@
 
                     <div class="d-flex justify-content-end gap-2">
                         <button type="button" onclick="resetInvoice()" class="btn btn-light">Reset</button>
+                        <button type="button" class="btn btn-success saveAndPrint">
+                            <i class="fa fa-print me-1"></i> Save & Print Invoice
+                        </button>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-save me-1"></i> Save Invoice
                         </button>
@@ -326,6 +329,124 @@
 <%- include('../components/footer') %>
 
 <script>
+function validateInvoiceForm() {
+    const form = document.getElementById("invoiceForm");
+
+    const prefix = form.invoice_prefix.value.trim();
+    const invoiceNo = form.invoice_no.value.trim();
+    const invoiceDate = form.invoice_date.value;
+    const dueDate = form.due_date.value;
+    const customerId = form.customer_id.value;
+    const tax = form.tax.value;
+
+    const itemsBody = document.getElementById("itemsTableBody");
+    const itemRows = itemsBody.querySelectorAll("tr");
+
+    /* ---------------- BASIC DETAILS ---------------- */
+
+    if (prefix === "") {
+        showToast("Invoice prefix is missing." , "warning");
+        return false;
+    }
+
+    if (invoiceNo === "") {
+        showToast("Invoice number is missing." , "warning");
+        return false;
+    }
+
+    if (!invoiceDate) {
+        showToast("Invoice date is required." , "warning");
+        return false;
+    }
+
+    if (!dueDate) {
+        showToast("Due date is required." , "warning");
+        return false;
+    }
+
+    if (new Date(dueDate) < new Date(invoiceDate)) {
+        showToast("Due date cannot be earlier than invoice date." , "warning");
+        return false;
+    }
+
+    if (customerId === "") {
+        showToast("Please select a customer." , "warning");
+        return false;
+    }
+
+    /* ---------------- ITEMS VALIDATION ---------------- */
+
+    if (itemRows.length === 0) {
+        showToast("At least one invoice item is required." , "warning");
+        return false;
+    }
+
+    /* ---------------- TAX & TOTAL ---------------- */
+
+    if (tax !== "" && parseFloat(tax) < 0) {
+        showToast("Tax percentage cannot be negative." , "warning");
+        return false;
+    }
+
+    const totalText = document.querySelector(".invoice-total").innerText;
+    const totalAmount = parseFloat(totalText.replace(/[^\d.]/g, ""));
+
+    if (isNaN(totalAmount) || totalAmount <= 0) {
+        showToast("Invoice total must be greater than zero." , "warning");
+        return false;
+    }
+
+    /* ---------------- VALID ---------------- */
+
+    return true;
+}
+function downloadInvoice(id)
+{
+    window.open(`/api/invoices/download/?id=${id}`);
+}
+
+function printInvoice(id) {
+    const width = 900;
+    const height = 650;
+    const left = (screen.width - width) / 2;
+    const top = (screen.height - height) / 2;
+
+    const features = `
+        width=${width},
+        height=${height},
+        left=${left},
+        top=${top},
+        resizable=yes,
+        scrollbars=yes,
+        toolbar=no,
+        menubar=no,
+        location=no,
+        status=no
+    `;
+
+    const printWindow = window.open(
+        `/api/invoices/print?id=${id}`,
+        'invoicePrint',
+        features
+    );
+
+    if (!printWindow) {
+        showToast("Popup blocked. Please allow popups." , "danger");
+        return;
+    }
+
+    printWindow.onload = () => {
+        printWindow.focus();
+        printWindow.print();
+    };
+
+    window.addEventListener('focus', () => {
+        printWindow.close();
+    }, { once: true });
+}
+
+
+
 function loadInvoice()
 {
     fetch("/api/counter/load-invoice" , {
@@ -393,7 +514,6 @@ function resetInvoice() {
     let globalProducts = [];
     let selectedProducts = [];
 
-    // View Switching
     function switchView(showCreate) {
         if (showCreate) {
             showView.classList.add('d-none');
@@ -417,7 +537,6 @@ function resetInvoice() {
     btnCreate.addEventListener('click', () => switchView(true));
     btnShow.addEventListener('click', () => switchView(false));
 
-    // Fetch Initial Data
     async function initializeData() {
         try {
             const [custRes, prodRes] = await Promise.all([
@@ -446,8 +565,7 @@ function resetInvoice() {
         }
     }
 
-    // Row Management
-// Row Management
+
 function addNewRow() {
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -568,12 +686,8 @@ function addNewRow() {
         document.querySelector('.invoice-total').innerText = `₹ ${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
     }
 
-    document.querySelector('[name="tax"]').addEventListener('input', updateSummary);
-
-
-        invoiceForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
+    async function saveInvoice()
+    {
             const productIds = document.getElementsByName('product_id[]');
             const names = document.getElementsByName('item_name[]');
             const qtys = document.getElementsByName('quantity[]');
@@ -622,6 +736,7 @@ function addNewRow() {
                     setTimeout(()=>{
                         resetInvoice();
                     } , 1000);
+                    return result.data;
                 } else {
                     showToast('Error: ' + (result.message || 'Submission failed') , "warning");
                 }
@@ -629,7 +744,24 @@ function addNewRow() {
                 console.error("Submission Error:", error);
                 showToast('A server error occurred.' , "danger");
             }
+    }
+
+    document.querySelector('[name="tax"]').addEventListener('input', updateSummary);
+
+
+        invoiceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await saveInvoice();
         });
+
+        document.querySelector(".saveAndPrint").addEventListener("click" , async (e)=>{
+            e.preventDefault();
+            if(validateInvoiceForm())
+            {
+                const data = await saveInvoice();
+                printInvoice(data._id);
+            }
+        })
 
         function loadInvoiceTable() {
         const invoiceTableBody = document.getElementById("invoiceTable");
@@ -678,6 +810,7 @@ function addNewRow() {
                             <div class="btn-group btn-group-sm">
                                 <button onclick="viewInvoice('${inv._id}')" class="btn btn-outline-secondary"><i class="fa fa-eye"></i></button>
                                 <button onclick="printInvoice('${inv._id}')" class="btn btn-outline-success"><i class="fa fa-print"></i></button>
+                                <button onclick="downloadInvoice('${inv._id}')" class="btn btn-outline-info"><i class="fa fa-download"></i></button>
                                 <button onclick="editInvoice('${inv._id}')" class="btn btn-outline-warning"><i class="fa fa-edit"></i></button>
                                 <button onclick="deleteInvoice('${inv._id}')" class="btn btn-outline-danger"><i class="fa fa-trash"></i></button>
                             </div>

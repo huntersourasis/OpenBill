@@ -95,7 +95,7 @@
                                     <select name="status" class="form-select">
                                         <option value="pending">Pending</option>
                                         <option value="paid">Paid</option>
-                                        <option value="overdue">Overdue</option>
+                                        <option value="due">Due</option>
                                     </select>
                                 </div>
                             </div>
@@ -188,6 +188,8 @@
                                     <th>Customer</th>
                                     <th>Date</th>
                                     <th>Amount</th>
+                                    <th>Paid</th>
+                                    <th>Due</th>
                                     <th>Status</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
@@ -242,7 +244,7 @@
                             <select name="status" class="form-select"> 
                                 <option value="pending">Pending</option>
                                 <option value="paid">Paid</option>
-                                <option value="overdue">Overdue</option>
+                                <option value="due">Due</option>
                                 <option value="cancelled">Cancelled</option> 
                             </select>
                         </div>
@@ -784,7 +786,7 @@ function addNewRow() {
             const invoices = result.data || [];
 
             if (invoices.length === 0) {
-                invoiceTableBody.innerHTML = '<tr><td colspan="7" class="text-center">No invoices found.</td></tr>';
+                invoiceTableBody.innerHTML = '<tr><td colspan="9" class="text-center">NO INVOICES FOUND</td></tr>';
                 return;
             }
 
@@ -804,7 +806,9 @@ function addNewRow() {
                         <td><strong>${inv.inv_number}</strong></td>    
                         <td>${customerName}</td>    
                         <td>${formatDate(date)}</td>
-                        <td class="fw-bold">₹ ${Number(inv.total_amount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>    
+                        <td class="fw-bold">₹ ${Number(inv.total_amount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td> 
+                        <td class="fw-bold">₹ ${Number(inv.paid_amount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td> 
+                        <td class="fw-bold">₹ ${Number((inv.total_amount) - Number(inv.paid_amount || 0)).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td> 
                         <td><span class="badge ${statusClass}">${inv.status.toUpperCase()}</span></td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm">

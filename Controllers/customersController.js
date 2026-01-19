@@ -1,4 +1,6 @@
 import customersModal from "../Modals/customersModal.js";
+import invoiceModal from "../Modals/invoicesModal.js";
+import paymentsModal from "../Modals/paymentsModal.js";
 import { sendHttpResponse } from "../Utils/httpResponse.js";
 const createCustomerController = async (req, res) => {
     try {
@@ -58,11 +60,70 @@ const createCustomerController = async (req, res) => {
 
 const readCustomerController = async (req, res) => {
     try {
-
-
         const customers = await customersModal
             .find({ status: true })
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
+
+        const customerIds = customers.map(c => c._id);
+        const invoiceAgg = await invoiceModal.aggregate([
+            {
+                $match: {
+                    customer_id: { $in: customerIds },
+                    status: { $in: ["paid", "due"] }
+                }
+            },
+            {
+                $group: {
+                    _id: "$customer_id",
+                    totalInvoiceCount: { $sum: 1 },
+                    paidAmount: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$status", "due"] },
+                                "$paid_amount",  
+                                0
+                            ]
+                        }
+                    },
+                    totalAmount: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$status", "due"] },
+                                "$total_amount",  
+                                0
+                            ]
+                        }
+                    }
+                }
+            }
+        ]);
+
+        const invoiceMap = new Map(
+            invoiceAgg.map(i => [
+                i._id.toString(),
+                {
+                    totalInvoiceCount: i.totalInvoiceCount,
+                    paidAmount: i.paidAmount,
+                    totalAmount: i.totalAmount
+                }
+            ])
+        );
+
+        const enrichedCustomers = customers.map(customer => {
+            const data = invoiceMap.get(customer._id.toString()) || {
+                totalInvoiceCount: 0,
+                paidAmount: 0,
+                totalAmount : 0
+            };
+
+            return {
+                ...customer,
+                totalInvoiceCount: data.totalInvoiceCount,
+                paidAmount: data.paidAmount,
+                totalAmount: data.totalAmount
+            };
+        });
 
         return sendHttpResponse(
             res,
@@ -70,8 +131,8 @@ const readCustomerController = async (req, res) => {
             true,
             "Customers fetched successfully",
             {
-                count: customers.length,
-                customers: customers
+                count: enrichedCustomers.length,
+                customers: enrichedCustomers
             }
         );
 
@@ -175,11 +236,9 @@ const deleteCustomerController = async (req, res) => {
             );
         }
 
-        const deletedCustomer = await customersModal.findByIdAndUpdate(
-            id,
-            { status: false },
-            { new: true }
-        );
+        const deletedCustomer = await customersModal.findByIdAndDelete(id);
+        await invoiceModal.deleteMany({customer_id : id});
+        await paymentsModal.deleteMany({customer_id : id});
 
         if (!deletedCustomer) {
             return sendHttpResponse(
@@ -208,11 +267,10 @@ const deleteCustomerController = async (req, res) => {
     }
 };
 
-
 export {
     createCustomerController,
     readCustomerController,
     readOneCustomerController,
     updateCustomerController,
-    deleteCustomerController
+    deleteCustomerController,
 };

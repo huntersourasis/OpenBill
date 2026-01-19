@@ -1,4 +1,5 @@
 import invoiceModel from "../Modals/invoicesModal.js";
+import paymentsModal from "../Modals/paymentsModal.js";
 import { sendHttpResponse } from "../Utils/httpResponse.js";
 import puppeteer from "puppeteer";
 import loadSettings from "../Utils/loadSettings.js";
@@ -49,6 +50,7 @@ const createInvoiceController = async (req, res) => {
             tax_percent,
             tax_amount,
             total_amount,
+            paid_amount : 0,
             notes,
             created_by 
         });
@@ -156,6 +158,8 @@ const deleteInvoiceController = async (req, res) => {
       return sendHttpResponse(res, 404, false, "Invoice not found");
     }
 
+    await paymentsModal.findOneAndDelete({invoice_id : id});
+
     return sendHttpResponse(
       res,
       200,
@@ -164,7 +168,7 @@ const deleteInvoiceController = async (req, res) => {
     );
 
   } catch (error) {
-    return sendHttpResponse(res, 500, false, error.message);
+    return sendHttpResponse(res, 500, false, error);
   }
 };
 

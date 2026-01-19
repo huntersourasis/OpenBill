@@ -40,7 +40,7 @@
     <div class="col-sm-6 col-md-4">
         <div class="card shadow-sm border-0">
             <div class="card-body">
-                <small class="text-muted">Total Products</small>
+                <h6 class="text-muted mb-1">Total Products</h6>
                 <h4 class="fw-bold mb-0" id="totalProducts"></h4>
             </div>
         </div>
@@ -48,7 +48,7 @@
     <div class="col-sm-6 col-md-4">
         <div class="card shadow-sm border-0">
             <div class="card-body">
-                <small class="text-muted">Active Products</small>
+                <h6 class="text-muted">Active Products</h6>
                 <h4 class="fw-bold mb-0" id="activeProducts"></h4>
             </div>
         </div>
@@ -56,7 +56,7 @@
     <div class="col-sm-12 col-md-4">
         <div class="card shadow-sm border-0">
             <div class="card-body">
-                <small class="text-muted">Out of Stock</small>
+                <h6 class="text-muted">Out of Stock</h6>
                 <h4 class="fw-bold mb-0" id="outOfStock"></h4>
             </div>
         </div>
@@ -292,7 +292,7 @@ function loadCategories() {
             if (!data.success || !data.data.length) {
                 categoryList.innerHTML = `
                     <li class="list-group-item text-muted text-center">
-                        No categories found
+                        NO CATEGORIES FOUND
                     </li>`;
                 return;
             }
@@ -555,7 +555,7 @@ function loadSkuRules() {
         if (!data.success || !data.data.length) {
             skuRuleList.innerHTML = `
                 <li class="list-group-item text-muted text-center">
-                    No SKU rules found
+                    NO SKU RULES FOUND
                 </li>`;
             return;
         }
@@ -687,8 +687,8 @@ function loadProducts() {
             document.getElementById("outOfStock").innerHTML = 0;
             productTableBody.innerHTML = `
                 <tr>
-                    <td colspan="9" class="text-center text-muted">
-                        No products found
+                    <td colspan="10" class="text-center text-muted">
+                        NO PRODUCTS FOUND
                     </td>
                 </tr>`;
             return;

@@ -9,6 +9,7 @@ import productsRouter from './Routers/productsRouter.js';
 import customersRouter from './Routers/customersRouter.js';
 import invoicesRouter from './Routers/invoicesRouter.js';
 import counterRouter from './Routers/counterRouter.js';
+import paymentsRouter from './Routers/paymentsRouter.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -30,6 +31,7 @@ server.use("/api/products" , productsRouter);
 server.use("/api/customers" , customersRouter);
 server.use("/api/invoices" , invoicesRouter);
 server.use("/api/counter" , counterRouter);
+server.use("/api/payments" , paymentsRouter);
 
 server.set("view engine" , "ejs");
 

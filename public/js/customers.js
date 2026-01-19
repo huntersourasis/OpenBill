@@ -50,6 +50,14 @@ async function loadCustomers() {
     tableBody.innerHTML = "";
     document.querySelector(".totalCustomers").innerHTML = data.data.count;
     document.querySelector(".activeCustomers").innerHTML = 0;
+    if(data.data.customers.length == 0)
+    {
+        tableBody.innerHTML += `
+            <tr class='text-center'>
+                <td colspan='9'>NO CUSTOMER FOUND</td>
+            </tr>
+        `;
+    }
     data.data.customers.forEach((c, i) => {
         tableBody.innerHTML += `
         <tr class='text-center'>
@@ -58,8 +66,8 @@ async function loadCustomers() {
           <td>${c.email}</td>
           <td>${c.primary_ph}</td>
           <td>${c.secondary_ph}</td>
-          <td>-</td>
-          <td>-</td>
+          <td>${c.totalInvoiceCount}</td>
+          <td class='fw-bold'>₹ ${Number(c.totalAmount) - Number(c.paidAmount)}</td>
           <td>
             <span class="badge ${true ? "bg-success" : "bg-secondary"}">
               ${true ? "Active" : "Inactive"}

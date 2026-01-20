@@ -15,4 +15,11 @@ function showToast(message, type = "success") {
         toastInstance = new bootstrap.Toast(toastEl, { delay: 3000 });
     }
     toastInstance.show();
+    if(type === "success") { 
+        let recent1 = localStorage.getItem("recent1");
+        let recent2 = localStorage.getItem("recent2");
+        localStorage.setItem("recent3" , recent2 != null ? recent2 : "No Activity" );
+        localStorage.setItem("recent2" , recent1 != null ? recent1 : "No Activity");
+        localStorage.setItem("recent1" , message);
+     }
 }

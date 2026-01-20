@@ -31,7 +31,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1">Total Revenue</h6>
-                                    <h4 class="fw-bold mb-0">₹ 1,25,000</h4>
+                                    <h4 class="fw-bold mb-0">₹ <span class="revenue"></span></h4>
                                 </div>
                                 <div class="bg-success bg-opacity-10 text-success rounded-circle p-3">
                                     <i class="fa fa-wallet fa-lg"></i>
@@ -49,13 +49,13 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1">Invoices</h6>
-                                    <h4 class="fw-bold mb-0">320</h4>
+                                    <h4 class="fw-bold mb-0"><span class="invoiceCount"></span></h4>
                                 </div>
                                 <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3">
                                     <i class="fa fa-file-invoice fa-lg"></i>
                                 </div>
                             </div>
-                            <small class="text-muted">This month</small>
+                            <small class="text-muted">This year</small>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1">Payments Received</h6>
-                                    <h4 class="fw-bold mb-0">₹ 98,450</h4>
+                                    <h4 class="fw-bold mb-0">₹ <span class="paymentRecived"></span></h4>
                                 </div>
                                 <div class="bg-info bg-opacity-10 text-info rounded-circle p-3">
                                     <i class="fa fa-credit-card fa-lg"></i>
@@ -85,7 +85,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1">Pending Dues</h6>
-                                    <h4 class="fw-bold mb-0">₹ 26,550</h4>
+                                    <h4 class="fw-bold mb-0">₹ <span class="pendingDues"></span></h4>
                                 </div>
                                 <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-3">
                                     <i class="fa fa-exclamation-circle fa-lg"></i>
@@ -104,7 +104,7 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body">
                             <h6 class="fw-semibold mb-3">Total Customers</h6>
-                            <h3 class="fw-bold">145</h3>
+                            <h3 class="fw-bold"><span class="totalCustomers"></span></h3>
                             <p class="text-muted mb-0">Active registered customers</p>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body">
                             <h6 class="fw-semibold mb-3">Products / Services</h6>
-                            <h3 class="fw-bold">58</h3>
+                            <h3 class="fw-bold"><span class="products"></span></h3>
                             <p class="text-muted mb-0">Available items for billing</p>
                         </div>
                     </div>
@@ -128,13 +128,13 @@
                             <h6 class="fw-semibold mb-3">Recent Activity</h6>
                             <ul class="list-unstyled mb-0">
                                 <li class="mb-2">
-                                    <small class="text-muted">Invoice #INV-1021 created</small>
+                                    <small class="text-muted"><span class="recent1"></span></small>
                                 </li>
                                 <li class="mb-2">
-                                    <small class="text-muted">Payment received ₹ 5,500</small>
+                                    <small class="text-muted"><span class="recent2"></span></small>
                                 </li>
                                 <li>
-                                    <small class="text-muted">New customer added</small>
+                                    <small class="text-muted"><span class="recent3"></span></small>
                                 </li>
                             </ul>
                         </div>
@@ -145,7 +145,82 @@
 
         </main>
     </div>
-
+    <script>
+        document.addEventListener("DOMContentLoaded" , ()=>{
+            fetch("/api/home/invoice" , {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            }).then((res)=>{
+                return res.json();
+            }).then((data)=>{
+                if(data.success)
+                {
+                    document.querySelector(".invoiceCount").innerHTML = data.data;
+                } else
+                {
+                    showToast(data.msg , "danger");
+                }
+            });
+            fetch("/api/home/customer" , {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            }).then((res)=>{
+                return res.json();
+            }).then((data)=>{
+                if(data.success)
+                {
+                    document.querySelector(".totalCustomers").innerHTML = data.data;
+                } else
+                {
+                    showToast(data.msg , "danger");
+                }
+            });
+            fetch("/api/home/product" , {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            }).then((res)=>{
+                return res.json();
+            }).then((data)=>{
+                if(data.success)
+                {
+                    document.querySelector(".products").innerHTML = data.data;
+                } else
+                {
+                    showToast(data.msg , "danger");
+                }
+            });
+            fetch("/api/home/revenue" , {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                }
+            }).then((res)=>{
+                return res.json();
+            }).then((data)=>{
+                if(data.success)
+                {
+                    let revenue = Number(data.data.paid.totalAmount) + Number(data.data.due.totalAmount);
+                    let recivedPayment = Number(data.data.paid.paidAmount) + Number(data.data.due.paidAmount);
+                    let dueAmount = revenue - recivedPayment; 
+                    document.querySelector(".revenue").innerHTML = revenue;
+                    document.querySelector(".paymentRecived").innerHTML = recivedPayment;
+                    document.querySelector(".pendingDues").innerHTML = dueAmount;
+                } else
+                {
+                    showToast(data.msg , "danger");
+                }
+            });
+            document.querySelector(".recent1").innerHTML = localStorage.getItem("recent1") || "No Activity";
+            document.querySelector(".recent2").innerHTML = localStorage.getItem("recent2") || "No Activity";
+            document.querySelector(".recent3").innerHTML = localStorage.getItem("recent3") || "No Activity";
+        })
+    </script>
     <%- include('../components/footer') %>
 </body>
 </html>

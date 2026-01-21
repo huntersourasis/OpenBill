@@ -5,6 +5,12 @@
     <title>Settings</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../components/cdns') %>
+    <%- include('../components/meta') %>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 
 <body class="d-flex flex-column vh-100 body-color">
@@ -14,7 +20,13 @@
 <div class="d-flex flex-grow-1 overflow-hidden">
     <%- include('../components/sidebar') %>
 
-    <main class="flex-grow-1 p-4 overflow-auto">
+    <main class="flex-grow-1 p-4 overflow-auto" 
+      data-bs-spy="scroll" 
+      data-bs-target="#settings-nav" 
+      data-bs-smooth-scroll="true" 
+      data-bs-root-margin="0px 0px -40%" 
+      tabindex="0"
+      style="position: relative;">
 
         <div class="container-fluid">
 
@@ -30,8 +42,8 @@
                 <!-- LEFT NAV -->
                 <div class="col-lg-3">
                     <div class="card border-0 shadow-sm">
-                        <div class="list-group list-group-flush">
-                            <a href="#company" class="list-group-item list-group-item-action active">Company Settings</a>
+                        <div class="list-group list-group-flush" id="settings-nav">
+                            <a href="#company" class="list-group-item list-group-item-action">Company Settings</a>
                             <a href="#billing" class="list-group-item list-group-item-action">Billing & Tax</a>
                             <a href="#users" class="list-group-item list-group-item-action">User & Roles</a>
                             <a href="#security" class="list-group-item list-group-item-action">Security</a>

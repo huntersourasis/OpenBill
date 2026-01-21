@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports</title>
     <%- include('../components/cdns') %>
+    <%- include('../components/meta') %>
 </head>
 <body class="d-flex flex-column vh-100 body-color">
     <%- include('../components/navbar') %>
@@ -74,7 +75,7 @@
                         <div class="card border-0 shadow-sm">
                             <div class="card-body">
                                 <h6 class="text-muted mb-1">Total Revenue</h6>
-                                <h3 class="fw-bold mb-0">₹ 1,25,000</h3>
+                                <h3 class="fw-bold mb-0">₹ <span class="revenue"></span></h3>
                             </div>
                         </div>
                     </div>
@@ -82,8 +83,8 @@
                     <div class="col-md-3">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body">
-                                <h6 class="text-muted mb-1">Total Invoices</h6>
-                                <h3 class="fw-bold mb-0">320</h3>
+                                <h6 class="text-muted mb-1">Total Invoices (This Year)</h6>
+                                <h3 class="fw-bold mb-0"><span class="invoice"></span></h3>
                             </div>
                         </div>
                     </div>
@@ -92,7 +93,7 @@
                         <div class="card border-0 shadow-sm">
                             <div class="card-body">
                                 <h6 class="text-muted mb-1">Payments Received</h6>
-                                <h3 class="fw-bold mb-0">₹ 98,450</h3>
+                                <h3 class="fw-bold mb-0">₹ <span class="paymentRecived"></span></h3>
                             </div>
                         </div>
                     </div>
@@ -100,8 +101,8 @@
                     <div class="col-md-3">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body">
-                                <h6 class="text-muted mb-1">Outstanding Dues</h6>
-                                <h3 class="fw-bold mb-0">₹ 26,550</h3>
+                                <h6 class="text-muted mb-1">Dues</h6>
+                                <h3 class="fw-bold mb-0">₹ <span class="pendingDues"></span></h3>
                             </div>
                         </div>
                     </div>
@@ -176,7 +177,7 @@
 
         </main>
     </div>
-
+    <script src="/js/report.js"></script>
     <%- include('../components/footer') %>
 </body>
 </html>

@@ -11,6 +11,7 @@ import invoicesRouter from './Routers/invoicesRouter.js';
 import counterRouter from './Routers/counterRouter.js';
 import paymentsRouter from './Routers/paymentsRouter.js';
 import homeRouter from './Routers/homeRouter.js';
+import reportRouter from './Routers/reportRouter.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -34,6 +35,7 @@ server.use("/api/invoices" , invoicesRouter);
 server.use("/api/counter" , counterRouter);
 server.use("/api/payments" , paymentsRouter);
 server.use("/api/home" , homeRouter);
+server.use("/api/report" , reportRouter);
 
 server.set("view engine" , "ejs");
 

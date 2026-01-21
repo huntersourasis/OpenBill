@@ -123,3 +123,31 @@ const saveSystem = () => update("system", {
 });
 
 loadSettings();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollContainer = document.querySelector('main');
+    const navLinks = document.querySelectorAll('#settings-nav a');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevents URL change and jump
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                // Scroll the 'main' container to the element
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Refresh Scrollspy when content changes
+    const dataSpyList = document.querySelectorAll('[data-bs-spy="scroll"]');
+    dataSpyList.forEach(dataSpyEl => {
+        bootstrap.ScrollSpy.getInstance(dataSpyEl).refresh();
+    });
+});

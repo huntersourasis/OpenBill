@@ -15,6 +15,11 @@ const protect = async (req, res, page) => {
         }
         const settings = await loadSettings();
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        res.set({
+            "Cache-Control": "no-store, no-cache, must-revalidate, private",
+            "Pragma": "no-cache",
+            "Expires": "0"
+        });
 
         return res.render(`pages/${page}`, {
             payload: decoded ,

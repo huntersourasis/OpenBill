@@ -220,20 +220,24 @@ const deletePaymentController = async (req, res) => {
     try {
         const { id , invoice_id } = req.body;
 
-        const invoice = await invoiceModel.findById(invoice_id);
         const payment = await paymentsModal.findById(id);
-        if(invoice)
+        try
         {
-            if ((invoice.paid_amount - payment.amount) <= 0) {
-                invoice.status = "pending";
-            } else
+            const invoice = await invoiceModel.findById(invoice_id);
+
+            if(invoice)
             {
-                invoice.status = "due";
+                if ((invoice.paid_amount - payment.amount) <= 0) {
+                    invoice.status = "pending";
+                } else
+                {
+                    invoice.status = "due";
+                }
+                invoice.paid_amount = invoice.paid_amount - payment.amount;
+                await invoice.save();
             }
-            invoice.paid_amount = invoice.paid_amount - payment.amount;
-            await invoice.save();
-        }
-        
+        } catch (err)
+        {}
         await paymentsModal.findByIdAndDelete(id);
         return sendHttpResponse(
             res,

@@ -561,7 +561,7 @@ const downloadInvoiceController = async (req , res) => {
         const safeInvoice = invoiceNumber.replace(/[^a-zA-Z0-9-_]/g, "");
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `attachment; filename="Invoice-${safeInvoice}.pdf"`);
-        res.send(pdfBuffer);
+        res.status(200).send(pdfBuffer);
     } catch (error) {
         console.error(error);
         res.status(500).send("Error generating invoice");

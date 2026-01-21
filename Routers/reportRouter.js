@@ -1,9 +1,10 @@
 import express from 'express';
-import { filterController} from '../Controllers/reportController.js';
+import { exportReportController, filterController} from '../Controllers/reportController.js';
 
 const reportRouter = express.Router();
 
 reportRouter
-    .post("/filter" , filterController);
+    .post("/filter" , filterController)
+    .post("/export" , exportReportController);
 
 export default reportRouter;

@@ -51,7 +51,7 @@ const loginController = async (req , res)=>{
                 sameSite: 'strict', 
                 maxAge: (3600000 * expiresIn)
            })
-           return sendHttpResponse(res , 200 , true , "Login Successful");
+           return sendHttpResponse(res , 200 , true , "Login Successful" , payload);
         } else
         {
            isEmailExist.maxLoginAttempts = isEmailExist.maxLoginAttempts + 1;

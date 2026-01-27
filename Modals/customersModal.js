@@ -50,6 +50,11 @@ const customersSchema = new mongoose.Schema(
         status: {
             type: Boolean,
             default: true
+        },
+
+        createdBy : {
+            type : String,
+            required : true
         }
     },
     {

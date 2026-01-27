@@ -184,7 +184,7 @@ try {
         const settings = await loadSettings();
 
         const invoiceData = await invoiceModel.findById(id).populate("customer_id" , "name address");
-        const logoUrl = "https://github.com/huntersourasis/Online/blob/main/logo.png?raw=true"; 
+        const logoUrl = `http://127.0.0.1:${process.env.PORT}/images/openbill_logo.png`; 
         const companyName = settings.companyName;
         const companyAddress = settings.address;
         const gstNumber = settings.gstNumber;
@@ -246,7 +246,7 @@ try {
 
                   table { width: 100%; border-collapse: collapse; }
                   th { text-align: left; padding: 15px 0; border-bottom: 1px solid var(--primary); font-size: 11px; text-transform: uppercase; color: var(--table-header); letter-spacing: 0.5px; }
-                  td { padding: 20px 0; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+                  td { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
                   .text-right { text-align: right; }
                   .item-desc { font-weight: 600; color: #111827; display: block; margin-bottom: 4px; }
                   .item-sub { font-size: 12px; color: var(--secondary); font-weight: 400; }
@@ -334,7 +334,7 @@ try {
                   <div class="summary-box">
                       <div class="summary-row"><span>Subtotal</span><span>₹ ${subtotal}</span></div>
                       <div class="summary-row"><span>Tax (GST ${taxPercentage} %)</span><span>₹ ${taxAmount}</span></div>
-                      <div class="total-row"><span>Amount Due</span><span>₹ ${totalAmount}</span></div>
+                      <div class="total-row"><span>Total Amount</span><span>₹ ${totalAmount}</span></div>
                   </div>
               </div>
 
@@ -381,7 +381,7 @@ const downloadInvoiceController = async (req , res) => {
         const settings = await loadSettings();
 
         const invoiceData = await invoiceModel.findById(id).populate("customer_id" , "name address");
-        const logoUrl = "https://github.com/huntersourasis/Online/blob/main/logo.png?raw=true"; 
+        const logoUrl = `http://127.0.0.1:${process.env.PORT}/images/openbill_logo.png`; 
         const companyName = settings.companyName;
         const companyAddress = settings.address;
         const gstNumber = settings.gstNumber;
@@ -443,7 +443,7 @@ const downloadInvoiceController = async (req , res) => {
 
                   table { width: 100%; border-collapse: collapse; }
                   th { text-align: left; padding: 15px 0; border-bottom: 1px solid var(--primary); font-size: 11px; text-transform: uppercase; color: var(--table-header); letter-spacing: 0.5px; }
-                  td { padding: 20px 0; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+                  td { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
                   .text-right { text-align: right; }
                   .item-desc { font-weight: 600; color: #111827; display: block; margin-bottom: 4px; }
                   .item-sub { font-size: 12px; color: var(--secondary); font-weight: 400; }
@@ -578,7 +578,7 @@ const printInvoiceController = async (req , res) => {
         const settings = await loadSettings();
 
         const invoiceData = await invoiceModel.findById(id).populate("customer_id" , "name address");
-        const logoUrl = "https://github.com/huntersourasis/Online/blob/main/logo.png?raw=true"; 
+        const logoUrl = `http://127.0.0.1:${process.env.PORT}/images/openbill_logo.png`; 
         const companyName = settings.companyName;
         const companyAddress = settings.address;
         const gstNumber = settings.gstNumber;
@@ -640,7 +640,7 @@ const printInvoiceController = async (req , res) => {
 
                   table { width: 100%; border-collapse: collapse; }
                   th { text-align: left; padding: 15px 0; border-bottom: 1px solid var(--primary); font-size: 11px; text-transform: uppercase; color: var(--table-header); letter-spacing: 0.5px; }
-                  td { padding: 20px 0; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+                  td { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
                   .text-right { text-align: right; }
                   .item-desc { font-weight: 600; color: #111827; display: block; margin-bottom: 4px; }
                   .item-sub { font-size: 12px; color: var(--secondary); font-weight: 400; }

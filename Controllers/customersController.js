@@ -9,7 +9,8 @@ const createCustomerController = async (req, res) => {
             email,
             primary_ph,
             secondary_ph,
-            address
+            address,
+            createdBy
         } = req.body;
 
         if (!name || !email || !primary_ph || !address) {
@@ -36,7 +37,8 @@ const createCustomerController = async (req, res) => {
             email,
             primary_ph,
             secondary_ph,
-            address
+            address,
+            createdBy
         });
 
         return sendHttpResponse(
@@ -147,31 +149,42 @@ const readCustomerController = async (req, res) => {
     }
 };
 
-const readOneCustomerController = async (req , res) => {
+const readOneCustomerController = async (req, res) => {
     try {
         const { id } = req.body;
-        if (id) {
-            const customer = await customersModal.findById(id);
-            if (!customer) {
-                return sendHttpResponse(
-                    res,
-                    404,
-                    false,
-                    "Customer not found"
-                );
-            }
-            return sendHttpResponse(
-                res,
-                200,
-                true,
-                "Customer fetched successfully",
-                customer
-            );
+
+        if (!id) {
+            return sendHttpResponse(res, 400, false, "Customer ID is required");
         }
+
+        // Fetch customer
+        const customer = await customersModal.findById(id).lean();
+        if (!customer) {
+            return sendHttpResponse(res, 404, false, "Customer not found");
+        }
+
+        // Fetch invoices (only invoice_number field)
+        const invoices = await invoiceModal.find(
+            { customer_id: id },
+            { inv_number: 1, _id: 0 }
+        );
+
+        // Attach invoice numbers
+        customer.invoices = invoices.map(inv => inv.inv_number);
+
+        return sendHttpResponse(
+            res,
+            200,
+            true,
+            "Customer fetched successfully",
+            customer
+        );
+
     } catch (error) {
-        return sendHttpResponse(res , 500 , false , "Internal Error");
+        return sendHttpResponse(res, 500, false, "Internal Error", error);
     }
-}
+};
+
 
 const updateCustomerController = async (req, res) => {
     try {

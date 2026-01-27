@@ -1,10 +1,10 @@
 1. Add a Print Button for Printing Multiple Invoices.
-2. After Login , Do not show the toast but show the toast after entering in dashboard and also show the toast after logout.
-3. Show Available invoices in Customer View.
-4. Fix invoice Design / (Item Gap and Date Position).
-5. Fix login page Design.
+2. After Login , Do not show the toast but show the toast after entering in dashboard and also show the toast after logout. --> Done
+3. Show Available invoices in Customer View. --> Done
+4. Fix invoice Design / (Item Gap and Date Position). --> Done
+5. Fix login page Design. --> Done
 6. fix table designs.
-7. Product Stock Validation in Invoice Form.
+7. Product Stock Validation in Invoice Form. --> Done
 8. Invoice Status Validation -> 
     a. pending -> No Nothing.
     b. paid -> paid_amount = total_amount.
@@ -12,3 +12,4 @@
     ** Both will create a payment.
 9. Send proper response from every controller.
 10. DOMContentLoad Animation to make the application smooth.
+11. Stock Minus

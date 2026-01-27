@@ -10,16 +10,6 @@
 
 <body class="d-flex flex-column vh-100 ">
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="liveToastSuccess" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header bg-success text-light">
-      <strong class="me-auto">Login</strong>
-      <small>Just now</small>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      Login successful.
-    </div>
-  </div>
   <div id="liveToastFailur" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header bg-danger text-light">
       <strong class="me-auto">Login</strong>
@@ -33,7 +23,7 @@
 </div>
 
   <%-  include('./navbar') %>
-<div class="d-flex flex-grow-1 overflow-hidden">
+<div class="d-flex flex-grow-1 overflow-auto">
   <main class="container my-5 flex-grow-1  py-5">
     <h2 class="fw-bold text-secondary">Login</h2>
     <p class="text-muted">Welcome back to <%- include('../components/appName') %></p>
@@ -113,12 +103,8 @@
     }).then((data)=>{
       if(data.success)
       {
-        const toastLiveExample = document.getElementById('liveToastSuccess');
-        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-        toastBootstrap.show();
-        setTimeout(()=>{
-          window.location.href = "/pages/home";
-        } , 1000);
+        localStorage.setItem("confirmLogin" , data.data.fullname);
+        window.location.href = "/pages/home";
       } else
       {
         const toastLiveExample = document.getElementById('liveToastFailur');

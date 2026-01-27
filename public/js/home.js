@@ -71,4 +71,15 @@ document.addEventListener("DOMContentLoaded" , ()=>{
             document.querySelector(".recent1").innerHTML = localStorage.getItem("recent1") || "No Activity";
             document.querySelector(".recent2").innerHTML = localStorage.getItem("recent2") || "No Activity";
             document.querySelector(".recent3").innerHTML = localStorage.getItem("recent3") || "No Activity";
+            if (localStorage.getItem("confirmLogin"))
+            {
+                const toastLiveExample = document.getElementById('liveToastSuccess');
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+                document.querySelector(".successMsg").innerHTML = `Welcome ${document.getElementById("fullname").value}`;
+                toastBootstrap.show();
+                setTimeout(()=>{
+                    localStorage.removeItem("confirmLogin");
+                    toastBootstrap.hide();
+                } , 1500);
+            }
 });

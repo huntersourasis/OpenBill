@@ -16,7 +16,8 @@ const saveBtn = document.querySelector(".saveBtn");
                 email : email.value,
                 primary_ph : primaryPhone.value,
                 secondary_ph : secondaryPhone.value,
-                address : address.value
+                address : address.value,
+                createdBy : document.getElementById("user_email").value
             })
         })
         .then((res)=>{
@@ -120,9 +121,23 @@ async function viewCustomer(id) {
             <label class="form-label">Address</label>
             <textarea class="form-control" rows="3" readonly>${c.address}</textarea>
         </div>
+
+    `;
+    document.getElementById("viewCustomerInvoice").innerHTML = `
+        <label class="form-label fw-bold">Customer Invoices</label>
+    `;
+
+    c.invoices.forEach(e =>{
+        document.getElementById("viewCustomerInvoice").innerHTML += `
+            <div class='col-md-3'>
+                <input type="text" class="form-control" value="${e}" readonly>
+            </div>
+        `;
+    })
+    document.getElementById("viewCustomerCreationInfo").innerHTML = `
         <div class="col-md-6">
-            <label class="form-label">Status</label>
-            <input class="form-control" value="${c.status ? "Active" : "Inactive"}" readonly>
+            <label class="form-label">Created By</label>
+            <input class="form-control" value="${c.createdBy}" readonly>
         </div>
         <div class="col-md-6">
             <label class="form-label">Created At</label>

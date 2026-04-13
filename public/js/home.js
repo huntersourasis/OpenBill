@@ -69,8 +69,8 @@ document.addEventListener("DOMContentLoaded" , ()=>{
                 }
             });
             document.querySelector(".recent1").innerHTML = localStorage.getItem("recent1") || "No Activity";
-            document.querySelector(".recent2").innerHTML = localStorage.getItem("recent2") || "No Activity";
-            document.querySelector(".recent3").innerHTML = localStorage.getItem("recent3") || "No Activity";
+            document.querySelector(".recent2").innerHTML = localStorage.getItem("recent2") ;
+            document.querySelector(".recent3").innerHTML = localStorage.getItem("recent3") ;
             if (localStorage.getItem("confirmLogin"))
             {
                 const toastLiveExample = document.getElementById('liveToastSuccess');

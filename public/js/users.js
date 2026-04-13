@@ -139,6 +139,8 @@ createUserBtn.addEventListener("click" , (e)=>{
         {   
             showToast(data.msg , "success");
             c_password.value = generatePassword(10);
+            c_fullname.value = "";
+            c_email.value = "";
             document.querySelector(".c_cancel").click();
             showData();
         } else
@@ -172,6 +174,7 @@ deleteBtn.addEventListener("click", async (e) => {
             const modalEl = document.getElementById("deleteUserModal");
             const modal = bootstrap.Modal.getInstance(modalEl);
             modal.hide();
+            showToast(data.msg , "success");
             showData();
         } else {
             alert("Error: " + data.msg);

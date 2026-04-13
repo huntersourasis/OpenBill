@@ -31,7 +31,7 @@ const createUserController = async (req, res) => {
         });
 
         await user.save();
-        return sendHttpResponse(res, 201, true, "User created successfully");
+        return sendHttpResponse(res, 201, true, `# Created User ${user.fullname}`);
 
     } catch (error) {
         console.error(error);
@@ -81,7 +81,7 @@ const updateUserController = async (req, res) => {
         }
 
         await user.save();
-        return sendHttpResponse(res, 200, true, `${fullname} updated successfully`);
+        return sendHttpResponse(res, 200, true, `Updated User ${fullname}`);
 
     } catch (error) {
         console.error(error);
@@ -98,7 +98,7 @@ const deleteUserController = async (req, res) => {
             return sendHttpResponse(res, 404, false, "User not found");
         }
 
-        return sendHttpResponse(res, 200, true, "User deleted successfully");
+        return sendHttpResponse(res, 200, true, `# Deleted User ${deleted.fullname}`);
 
     } catch (error) {
         console.error(error);
@@ -124,7 +124,7 @@ const userStatusController = async (req, res) => {
             res,
             200,
             true,
-            `User ${user.status ? "activated" : "deactivated"} successfully`
+            `# Activation Status (${user.fullname}) ${user.status ? "activated" : "deactivated"}`
         );
 
     } catch (error) {

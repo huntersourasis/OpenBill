@@ -17,7 +17,7 @@ const createCategoryController = async (req, res) => {
         }
 
         const newCategory = await categoryModal.create({ category });
-        return sendHttpResponse(res, 201, true, "Category created successfully", newCategory);
+        return sendHttpResponse(res, 201, true, `# Created Category ${category}`, newCategory);
 
     } catch (err) {
         return sendHttpResponse(res, 500, false, err.message);
@@ -73,7 +73,7 @@ const updateCategoryController = async (req, res) => {
             res,
             200,
             true,
-            "Category updated successfully",
+            `# Updated Category ${category}`,
             updatedCategory
         );
 
@@ -101,7 +101,7 @@ const deleteCategoryController = async (req, res) => {
         await productsModal.deleteMany({ category: category.category });
         await categoryModal.findByIdAndDelete(id);
 
-        return sendHttpResponse(res, 200, true, "Category deleted successfully");
+        return sendHttpResponse(res, 200, true, `# Deleted Category ${category}`);
 
     } catch (err) {
         return sendHttpResponse(res, 500, false, err.message);
@@ -131,7 +131,7 @@ const createSKUController = async (req, res) => {
         }
 
         const sku = await skuModal.create({ category, sku_prefix });
-        return sendHttpResponse(res, 201, true, "SKU created successfully", sku);
+        return sendHttpResponse(res, 201, true, `# Created SKU ${sku_prefix}`, sku);
 
     } catch (err) {
         return sendHttpResponse(res, 500, false, err.message);
@@ -169,7 +169,7 @@ const updateSKUController = async (req, res) => {
             return sendHttpResponse(res, 404, false, "SKU not found");
         }
 
-        return sendHttpResponse(res, 200, true, "SKU updated successfully", updated);
+        return sendHttpResponse(res, 200, true, `# Updated SKU ${sku_prefix}`, updated);
 
     } catch (err) {
         return sendHttpResponse(res, 500, false, err.message);
@@ -197,7 +197,7 @@ const deleteSKUController = async (req, res) => {
             skuModal.findByIdAndDelete(id)
         ]);
 
-        return sendHttpResponse(res, 200, true, "SKU deleted successfully");
+        return sendHttpResponse(res, 200, true, `#Deleted SKU ${existingSKU.sku_prefix}`);
 
     } catch (err) {
         console.error(err);
@@ -211,7 +211,7 @@ const deleteSKUController = async (req, res) => {
 const createProductController = async (req, res) => {
     try {
         const product = await productsModal.create(req.body);
-        return sendHttpResponse(res, 201, true, "Product created successfully", product);
+        return sendHttpResponse(res, 201, true, `# Created Product ${product.name}`, product);
 
     } catch (err) {
         if (err.code === 11000) {
@@ -244,7 +244,7 @@ const updateProductController = async (req, res) => {
             return sendHttpResponse(res, 404, false, "Product not found");
         }
 
-        return sendHttpResponse(res, 200, true, "Product updated successfully", updated);
+        return sendHttpResponse(res, 200, true, `# Updated Product ${updated.name}`, updated);
 
     } catch (err) {
         return sendHttpResponse(res, 500, false, err.message);
@@ -260,7 +260,7 @@ const deleteProductController = async (req, res) => {
             return sendHttpResponse(res, 404, false, "Product not found");
         }
 
-        return sendHttpResponse(res, 200, true, "Product deleted successfully");
+        return sendHttpResponse(res, 200, true, `# Deleted Product ${deleted.name}`);
 
     } catch (err) {
         return sendHttpResponse(res, 500, false, err.message);

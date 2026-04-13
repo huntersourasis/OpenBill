@@ -49,7 +49,7 @@ function cancelPayment(paymentId , invoiceId) {
                 return;
             }
 
-            showToast("Payment canceled sucessfully")
+            showToast(data.msg , "success")
 
             loadPayments();
         }
@@ -79,7 +79,7 @@ function deletePayment(paymentId , invoiceId) {
                 showToast(data.msg , "danger");
                 return;
             }
-            showToast("Payment deleted successfully")
+            showToast(data.msg , "success")
             loadPayments();
         }
     });
@@ -199,7 +199,7 @@ function loadCustomers()
                 showToast(data.msg , "danger");
                 return;
             }
-            showToast("Payment created successfully");
+            showToast(data.msg , "success");
             bootstrap.Modal.getInstance(
                 document.getElementById("addPaymentModal")
             ).hide();
@@ -404,7 +404,7 @@ function loadCustomers()
             return;
         }
 
-        showToast("Payment updated successfully");
+        showToast(data.msg , "success");
 
         bootstrap.Modal.getInstance(
             document.getElementById("editPaymentModal")

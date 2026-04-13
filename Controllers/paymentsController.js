@@ -81,7 +81,7 @@ const createPaymentController = async (req, res) => {
             res,
             201,
             true,
-            "Payment recorded successfully",
+            `# Recorded Payment ${payment._id}`,
             payment
         );
     } catch (error) {
@@ -202,7 +202,7 @@ const updatePaymentController = async (req, res) => {
             res,
             200,
             true,
-            "Payment updated successfully",
+            `# Updated Payment ${payment._id}`,
             payment
         );
     } catch (error) {
@@ -243,7 +243,7 @@ const deletePaymentController = async (req, res) => {
             res,
             200,
             true,
-            "Payment deleted successfully",
+            `# Deleted Payment ${payment._id}`,
             null
         );
     } catch (error) {
@@ -291,7 +291,7 @@ const cancelPaymentController = async (req, res) => {
             res,
             200,
             true,
-            "Payment canceled successfully",
+            `# Cancelled Payment ${id}`,
             null
         );
     } catch (error) {

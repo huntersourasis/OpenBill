@@ -93,10 +93,28 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Payment Status</label>
-                                    <select name="status" class="form-select">
+                                    <select name="status" class="form-select" id="invoiceStatus">
                                         <option value="pending">Pending</option>
                                         <option value="paid">Paid</option>
                                         <option value="due">Due</option>
+                                    </select>
+                                </div>
+                                <!-- Paid Amount -->
+                                <div class="col-md-6 d-none" id="paidAmountWrapper">
+                                    <label class="form-label">Paid Amount</label>
+                                    <input type="number" required name="paid_amount" class="form-control" placeholder="Enter paid amount">
+                                    <small class="text-muted">Remaining: ₹ <span id="remainingAmount">0.00</span></small>
+                                </div>
+
+                                <!-- Payment Mode -->
+                                <div class="col-md-6 d-none" id="paymentModeWrapper">
+                                    <label class="form-label">Payment Mode</label>
+                                    <select name="payment_mode" class="form-select" required>
+                                        <option value="">Select Mode</option>
+                                        <option value="cash">Cash</option>
+                                        <option value="upi">UPI</option>
+                                        <option value="card">Card</option>
+                                        <option value="bank">Bank Transfer</option>
                                     </select>
                                 </div>
                             </div>
@@ -154,7 +172,7 @@
                                     <hr>
                                     <div class="d-flex justify-content-between">
                                         <span class="fw-semibold">Total</span>
-                                        <span class="fw-bold fs-5 invoice-total">₹ 0.00</span>
+                                        <span class="fw-bold fs-5 invoice-total" data-val="">₹ 0.00</span>
                                     </div>
                                 </div>
                             </div>
@@ -332,6 +350,82 @@
 <%- include('../components/footer') %>
 
 <script>
+    
+document.addEventListener("DOMContentLoaded", () => {
+
+    const statusSelect = document.getElementById("invoiceStatus");
+    const paidWrapper = document.getElementById("paidAmountWrapper");
+    const paymentModeWrapper = document.getElementById("paymentModeWrapper");
+    const paidInput = document.querySelector('[name="paid_amount"]');
+    const remainingText = document.getElementById("remainingAmount");
+
+    function getTotal() {
+        return parseFloat(
+            document.querySelector(".invoice-total").innerText.replace(/[^\d.]/g, "")
+        ) || 0;
+    }
+function updateUI() {
+    const status = statusSelect.value;
+    const total = getTotal();
+
+    if (status === "pending") {
+        paidWrapper.classList.add("d-none");
+        paymentModeWrapper.classList.add("d-none");
+
+        paidInput.value = "";
+        paidInput.removeAttribute("readonly");
+
+        remainingText.innerText = "0.00";
+    }
+
+    else if (status === "paid") {
+        paidWrapper.classList.remove("d-none");
+        paymentModeWrapper.classList.remove("d-none");
+
+        paidInput.value = total.toFixed(2);
+        paidInput.setAttribute("readonly", true);
+
+        remainingText.innerText = "0.00";
+    }
+
+    else if (status === "due") {
+        paidWrapper.classList.remove("d-none");
+        paymentModeWrapper.classList.remove("d-none");
+
+        paidInput.value = "";
+        paidInput.removeAttribute("readonly");
+
+        remainingText.innerText = total.toFixed(2);
+    }
+}
+
+    function validateAndUpdateRemaining() {
+        const total = getTotal();
+        let paid = parseFloat(paidInput.value || 0);
+
+        if (paid < 0) paid = 0;
+        if (paid > total) {
+            paid = total;
+            paidInput.value = total;
+        }
+
+        const remaining = total - paid;
+        remainingText.innerText = remaining.toFixed(2);
+
+        // Optional visual feedback
+        if (remaining === 0) {
+            remainingText.style.color = "green";
+        } else {
+            remainingText.style.color = "red";
+        }
+    }
+
+    statusSelect.addEventListener("change", updateUI);
+    paidInput.addEventListener("input", validateAndUpdateRemaining);
+
+});
+    let inv_note = "Thank you for your business. Please ensure that payment is made within the due date mentioned above. Late payments may be subject to additional charges as per our terms and conditions.If you have any questions regarding this invoice, feel free to contact us. We appreciate your prompt attention to this matter and look forward to serving you again."
+    document.querySelector("[name='notes']").innerHTML = inv_note;
 function validateInvoiceForm() {
     const form = document.getElementById("invoiceForm");
 
@@ -344,8 +438,6 @@ function validateInvoiceForm() {
 
     const itemsBody = document.getElementById("itemsTableBody");
     const itemRows = itemsBody.querySelectorAll("tr");
-
-    /* ---------------- BASIC DETAILS ---------------- */
 
     if (prefix === "") {
         showToast("Invoice prefix is missing." , "warning");
@@ -524,10 +616,33 @@ function updateInvoice ()
 
 function resetInvoice() {
     invoiceForm.reset();
+
     const today = new Date().toISOString().split('T')[0];
     document.querySelectorAll('input[type="date"]').forEach(input => input.value = today);
+
     document.querySelector('[name="tax"]').value = "<%= settings.defaultTax %>";
+
     itemsTableBody.innerHTML = "";
+
+    // ✅ RESET PAYMENT UI
+    const paidWrapper = document.getElementById("paidAmountWrapper");
+    const paymentModeWrapper = document.getElementById("paymentModeWrapper");
+    const paidInput = document.querySelector('[name="paid_amount"]');
+    const remainingText = document.getElementById("remainingAmount");
+
+    paidWrapper.classList.add("d-none");
+    paymentModeWrapper.classList.add("d-none");
+
+    paidInput.value = "";
+    paidInput.removeAttribute("readonly");
+
+    if (remainingText) remainingText.innerText = "0.00";
+
+    // optional: reset payment mode
+    const paymentMode = document.querySelector('[name="payment_mode"]');
+    if (paymentMode) paymentMode.value = "";
+
+    // ---------------- NORMAL RESET FLOW ----------------
     loadInvoice();
     addNewRow();
     updateSummary();
@@ -622,7 +737,7 @@ function addNewRow() {
                 </select>
             <input type="hidden" name="item_name[]">
         </td>
-        <td><input type="number" name="quantity[]" class="form-control" min="0" value="0"></td>
+        <td><input type="number" name="quantity[]" class="form-control" min="0" value="1"></td>
         <td><input type="number" readonly name="stock[]" class="form-control" min="0" ></td>
         <td><input type="number" name="price[]" class="form-control" step="0.01" value="0"></td>
         <td><input type="text" class="form-control row-total" readonly value="0.00"></td>
@@ -712,7 +827,7 @@ function addNewRow() {
     });
 
     function calculateRowTotal(row) {
-        const qty = Number(row.querySelector('[name="quantity[]"]').value || 0);
+        const qty = Number(row.querySelector('[name="quantity[]"]').value || 1);
         const price = Number(row.querySelector('[name="price[]"]').value || 0);
         const total = qty * price;
         row.querySelector('.row-total').value = total.toFixed(2);
@@ -720,19 +835,32 @@ function addNewRow() {
 
     }
 
-    function updateSummary() {
-        let subtotal = 0;
-        document.querySelectorAll('.row-total').forEach(input => {
-            subtotal += Number(input.value || 0);
-        });
+function updateSummary() {
+    let subtotal = 0;
+    document.querySelectorAll('.row-total').forEach(input => {
+        subtotal += Number(input.value || 0);
+    });
 
-        const taxPercent = Number(document.querySelector('[name="tax"]').value || 0);
-        const taxAmount = subtotal * (taxPercent / 100);
-        const total = subtotal + taxAmount;
+    const taxPercent = Number(document.querySelector('[name="tax"]').value || 0);
+    const taxAmount = subtotal * (taxPercent / 100);
+    const total = subtotal + taxAmount;
 
-        document.querySelector('.invoice-subtotal').innerText = `₹ ${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-        document.querySelector('.invoice-total').innerText = `₹ ${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+    document.querySelector('.invoice-subtotal').innerText =
+        `₹ ${subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+    document.querySelector('.invoice-total').innerText =
+        `₹ ${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+    // IMPORTANT: AUTO UPDATE PAID AMOUNT
+    const status = document.getElementById("invoiceStatus").value;
+    const paidInput = document.querySelector('[name="paid_amount"]');
+    const remainingText = document.getElementById("remainingAmount");
+
+    if (status === "paid") {
+        paidInput.value = total.toFixed(2);
+        if (remainingText) remainingText.innerText = "0.00";
     }
+}
 
     async function saveInvoice()
     {
@@ -779,14 +907,77 @@ function addNewRow() {
                 const result = await response.json();
 
                 if (result.success) {
-                    showToast('Invoice Created Successfully!' , "success");
+                
+                    const invoiceId = result.data._id;
+                    const totalAmount = parseFloat(
+                        document.querySelector(".invoice-total").innerText.replace(/[^\d.]/g, "")
+                    );
+                
+                    let paymentAmount = 0;
+                    let payment_status = "pending";
+                    // ---------------- STATUS LOGIC ----------------
+                    if (payload.status === "paid") {
+                        paymentAmount = totalAmount;
+                        payment_status = "completed"
+                        
+                    }
+                    else if (payload.status === "due") {
+                        const inputAmount = document.querySelector('[name="paid_amount"]').value;
+                        paymentAmount = parseFloat(inputAmount || 0);
+                    
+                        if (paymentAmount <= 0 || paymentAmount > totalAmount) {
+                            showToast("Enter valid paid amount", "warning");
+                            return;
+                        }
+                    }
+
+                    if ((payload.status === "paid" || payload.status === "due")) {
+                        const mode = document.querySelector('[name="payment_mode"]').value;
+                        if (!mode) {
+                            showToast("Select payment mode", "warning");
+                            return;
+                        }
+                    }
+
+                    // ---------------- CREATE PAYMENT ----------------
+                    if (payload.status === "paid" || payload.status === "due") {
+                        let payment_status = "pending";
+                        const paymentPayload = {
+                            customer_id: payload.customer_id,
+                            invoice_id: invoiceId,
+                            amount: paymentAmount,
+                            payment_mode: document.querySelector('[name="payment_mode"]').value || "cash", 
+                            status : payment_status ,
+                            payment_date: new Date().toISOString().split("T")[0],
+                            notes: "Auto payment from invoice"
+                        };
+                    
+                        try {
+                            await fetch("/api/payments/create", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(paymentPayload)
+                            });
+                        
+                        } catch (err) {
+                            console.error("Payment Error:", err);
+                            showToast("Payment creation failed", "danger");
+                        }
+                    }
+                
+                    // ---------------- UI SUCCESS ----------------
+                    showToast(result.msg, "success");
                     updateInvoice();
-                    setTimeout(()=>{
+                
+                    setTimeout(() => {
                         resetInvoice();
-                    } , 1000);
+                    }, 1000);
+                
                     return result.data;
                 } else {
-                    showToast('Error: ' + (result.message || 'Submission failed') , "warning");
+                    showToast('Error: ' + (result.msg || 'Submission failed') , "warning");
                 }
             } catch (error) {
                 console.error("Submission Error:", error);
@@ -1009,9 +1200,9 @@ async function updateEditedInvoice() {
             })
         });
         const result = await res.json();
-        if (!result.success) throw new Error(result.message);
+        if (!result.success) throw new Error(result.msg);
 
-        showToast("Invoice updated successfully", "success");
+        showToast(result.msg, "success");
         bootstrap.Modal.getInstance(document.getElementById("editInvoiceModal")).hide();
         loadInvoiceTable();
     } catch (err) {
@@ -1038,9 +1229,9 @@ async function updateEditedInvoice() {
                 })
             });
             const result = await res.json();
-            if (!result.success) throw new Error(result.message);
+            if (!result.success) throw new Error(result.msg);
 
-            showToast("Invoice deleted successfully", "success");
+            showToast(result.msg, "success");
             bootstrap.Modal.getInstance(
                 document.getElementById("deleteInvoiceModal")
             ).hide();
@@ -1087,6 +1278,20 @@ async function updateEditedInvoice() {
         initializeData();
         loadInvoiceTable();
     });
+const status = document.getElementById("invoiceStatus").value;
+const paidInput = document.querySelector('[name="paid_amount"]');
+
+if (status === "paid") {
+    const total = parseFloat(
+        document.querySelector(".invoice-total").innerText.replace(/[^\d.]/g, "")
+    ) || 0;
+
+    paidInput.value = total.toFixed(2);
+
+    // also update remaining
+    const remainingText = document.getElementById("remainingAmount");
+    if (remainingText) remainingText.innerText = "0.00";
+}
 </script>
 
 </body>

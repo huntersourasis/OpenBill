@@ -55,7 +55,7 @@ const createInvoiceController = async (req, res) => {
             created_by 
         });
 
-        return sendHttpResponse(res , 201 , true , "Invoice saved successfully" , newInvoice);
+        return sendHttpResponse(res , 201 , true , `# Created Invoice ${inv_number}` , newInvoice);
 
     } catch (error) {
         console.error("SERVER ERROR:", error);
@@ -138,7 +138,7 @@ const updateInvoiceController = async (req, res) => {
       res,
       200,
       true,
-      "Invoice updated successfully",
+      `# Updated Invoice ${updatedInvoice.inv_number}`,
       updatedInvoice
     );
 
@@ -164,7 +164,7 @@ const deleteInvoiceController = async (req, res) => {
       res,
       200,
       true,
-      "Invoice deleted successfully"
+      `# Deleted Invoice ${deleted.inv_number}`
     );
 
   } catch (error) {

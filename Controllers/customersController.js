@@ -45,7 +45,7 @@ const createCustomerController = async (req, res) => {
             res,
             201,
             true,
-            "Customer created successfully",
+            `# Created Customer ${customer._id}`,
             customer
         );
 
@@ -221,7 +221,7 @@ const updateCustomerController = async (req, res) => {
             res,
             200,
             true,
-            "Customer updated successfully",
+            `# Updated Customer ${updatedCustomer._id}`,
             updatedCustomer
         );
 
@@ -266,7 +266,7 @@ const deleteCustomerController = async (req, res) => {
             res,
             200,
             true,
-            "Customer deleted successfully"
+            `# Deleted Customer ${id}`
         );
 
     } catch (error) {

@@ -44,7 +44,7 @@ async function update(section, payload) {
     }).then((data)=>{
         if (data.success)
         {
-            showToast(`${sectionToTag(section)} updated successfully` , "success");
+            showToast(`# Updated Settings ${sectionToTag(section)}` , "success");
         } else
         {
             showToast(data.msg , "warning");

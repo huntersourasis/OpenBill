@@ -97,6 +97,7 @@
                     </div>
                 </div>
             </div>
+
         
             <!-- Secondary Cards -->
             <div class="row g-4">
@@ -157,6 +158,21 @@
                     </div>
                 </div>
             </div>
+            <div class="row g-4 mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm p-3" style="
+                        backdrop-filter: blur(10px);
+                        background: rgba(255,255,255,0.7);
+                        border-radius: 16px;
+                    ">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-semibold mb-0">Revenue vs Dues Trend</h6>
+                            <small class="text-muted">Last 6 months</small>
+                        </div>
+                        <canvas id="financeChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
         <input type="hidden" name="" id="fullname" value="<%= payload.fullname %>">
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
@@ -174,6 +190,7 @@
         </main>
     </div>
     <script src="/js/home.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <%- include('../components/footer') %>
 </body>
 </html>

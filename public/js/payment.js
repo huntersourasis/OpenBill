@@ -266,7 +266,6 @@ function loadCustomers()
                     <td>${p.customer_id?.name || "-"}</td>
                     <td>${p.invoice_id?.inv_number || "-"}</td>
                     <td class='fw-bold'>₹ ${p.amount.toLocaleString()}</td>
-                    <td>₹ ${p.due_amount.toLocaleString()}</td>
                     <td>
                         <span class="badge ${
                             p.payment_mode === "cash"

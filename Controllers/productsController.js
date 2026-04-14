@@ -101,7 +101,7 @@ const deleteCategoryController = async (req, res) => {
         await productsModal.deleteMany({ category: category.category });
         await categoryModal.findByIdAndDelete(id);
 
-        return sendHttpResponse(res, 200, true, `# Deleted Category ${category}`);
+        return sendHttpResponse(res, 200, true, `# Deleted Category ${category.category}`);
 
     } catch (err) {
         return sendHttpResponse(res, 500, false, err.message);

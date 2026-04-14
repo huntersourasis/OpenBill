@@ -72,7 +72,7 @@ const readCustomerController = async (req, res) => {
             {
                 $match: {
                     customer_id: { $in: customerIds },
-                    status: { $in: ["paid", "due"] }
+                    status: { $in: ["paid", "due" , "pending"] }
                 }
             },
             {
@@ -166,11 +166,14 @@ const readOneCustomerController = async (req, res) => {
         // Fetch invoices (only invoice_number field)
         const invoices = await invoiceModal.find(
             { customer_id: id },
-            { inv_number: 1, _id: 0 }
+            { inv_number: 1, status : 1 , _id: 0 }
         );
 
         // Attach invoice numbers
-        customer.invoices = invoices.map(inv => inv.inv_number);
+        customer.invoices = invoices.map(inv => ({
+            invoice_number: inv.inv_number,
+            status: inv.status
+        }));
 
         return sendHttpResponse(
             res,

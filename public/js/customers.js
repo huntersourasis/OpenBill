@@ -129,8 +129,8 @@ async function viewCustomer(id) {
 
     c.invoices.forEach(e =>{
         document.getElementById("viewCustomerInvoice").innerHTML += `
-            <div class='col-md-3'>
-                <input type="text" class="form-control" value="${e}" readonly>
+            <div class='col-md-4'>
+                <input type="text" class="form-control" value="${e.invoice_number} - [${e.status}]" readonly>
             </div>
         `;
     })

@@ -275,7 +275,24 @@
 <%- include('../components/footer') %>
 
 <script>
-    const categoryInput = document.getElementById("category");
+function animateNumber(element, target, duration = 1200) {
+    let start = 0;
+    const increment = target / (duration / 16); // ~60fps
+
+    function update() {
+        start += increment;
+
+        if (start >= target) {
+            element.innerHTML = Math.floor(target);
+        } else {
+            element.innerHTML = Math.floor(start);
+            requestAnimationFrame(update);
+        }
+    }
+
+    update();
+}
+const categoryInput = document.getElementById("category");
 const categoryList = document.getElementById("categoryList");
 const addCategoryBtn = document.querySelector(".addCategoryBtn");
 function loadCategories() {
@@ -695,7 +712,7 @@ function loadProducts() {
             return;
         }
         let totalProducts = data.data.length;
-        document.getElementById("totalProducts").innerHTML = totalProducts;
+        animateNumber(document.getElementById("totalProducts") , totalProducts);
         let activeProducts = 0;
         data.data.forEach((e)=>{
             if(e.isActive)
@@ -703,7 +720,7 @@ function loadProducts() {
                 activeProducts += 1;
             }
         })
-        document.getElementById("activeProducts").innerHTML = activeProducts;
+        animateNumber(document.getElementById("activeProducts") , activeProducts);
         let outOfStock = 0;
         data.data.forEach((e)=>{
             if(e.stock < 1)
@@ -711,7 +728,7 @@ function loadProducts() {
                 outOfStock += 1;
             }
         })
-        document.getElementById("outOfStock").innerHTML = outOfStock;
+        animateNumber(document.getElementById("outOfStock") , outOfStock);
         data.data.forEach((p, i) => {
             productTableBody.insertAdjacentHTML("beforeend", `
                 <tr class='text-center'>

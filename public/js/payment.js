@@ -1,3 +1,20 @@
+function animateNumber(element, target, duration = 1200) {
+    let start = 0;
+    const increment = target / (duration / 16); 
+
+    function update() {
+        start += increment;
+
+        if (start >= target) {
+            element.innerHTML = Math.floor(target);
+        } else {
+            element.innerHTML = Math.floor(start);
+            requestAnimationFrame(update);
+        }
+    }
+
+    update();
+}
 let confirmCallback = null;
 
 function showConfirmModal({ title, message, confirmText, confirmClass, onConfirm }) {
@@ -303,9 +320,9 @@ function loadCustomers()
                 </tr>
             `;
         });
-        document.querySelector(".total_payment").innerHTML = total_payment;
-        document.querySelector(".this_month").innerHTML = this_month_payment;
-        document.querySelector(".dues").innerHTML = due_amount;
+        animateNumber(document.querySelector(".total_payment") , total_payment);
+        animateNumber(document.querySelector(".this_month") , this_month_payment);
+        animateNumber(document.querySelector(".dues") , due_amount);
     }
     function getOrdinal(n) {
         const s = ["th", "st", "nd", "rd"];

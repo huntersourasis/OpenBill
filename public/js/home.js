@@ -1,3 +1,21 @@
+let financeChartInstance = null;
+function animateNumber(element, target, duration = 1200) {
+    let start = 0;
+    const increment = target / (duration / 16); // ~60fps
+
+    function update() {
+        start += increment;
+
+        if (start >= target) {
+            element.innerHTML = Math.floor(target);
+        } else {
+            element.innerHTML = Math.floor(start);
+            requestAnimationFrame(update);
+        }
+    }
+
+    update();
+}
 document.addEventListener("DOMContentLoaded" , ()=>{
             fetch("/api/home/invoice" , {
                 method : "POST",
@@ -9,7 +27,7 @@ document.addEventListener("DOMContentLoaded" , ()=>{
             }).then((data)=>{
                 if(data.success)
                 {
-                    document.querySelector(".invoiceCount").innerHTML = data.data;
+                    animateNumber(document.querySelector(".invoiceCount"), data.data);
                 } else
                 {
                     showToast(data.msg , "danger");
@@ -25,7 +43,7 @@ document.addEventListener("DOMContentLoaded" , ()=>{
             }).then((data)=>{
                 if(data.success)
                 {
-                    document.querySelector(".totalCustomers").innerHTML = data.data;
+                    animateNumber(document.querySelector(".totalCustomers"), data.data);
                 } else
                 {
                     showToast(data.msg , "danger");
@@ -41,33 +59,50 @@ document.addEventListener("DOMContentLoaded" , ()=>{
             }).then((data)=>{
                 if(data.success)
                 {
-                    document.querySelector(".products").innerHTML = data.data;
+                    animateNumber(document.querySelector(".products"), data.data);
                 } else
                 {
                     showToast(data.msg , "danger");
                 }
             });
-            fetch("/api/home/revenue" , {
-                method : "POST",
-                headers : {
-                    "Content-Type" : "application/json"
-                }
-            }).then((res)=>{
-                return res.json();
-            }).then((data)=>{
-                if(data.success)
-                {
+
+            fetch("/api/home/revenue", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                
+                    // ====== COMMON DATA ======
                     let revenue = Number(data.data.paid.totalAmount) + Number(data.data.due.totalAmount);
                     let recivedPayment = Number(data.data.paid.paidAmount) + Number(data.data.due.paidAmount);
-                    let dueAmount = revenue - recivedPayment; 
-                    document.querySelector(".revenue").innerHTML = revenue;
-                    document.querySelector(".paymentRecived").innerHTML = recivedPayment;
-                    document.querySelector(".pendingDues").innerHTML = dueAmount;
-                } else
-                {
-                    showToast(data.msg , "danger");
+                    let dueAmount = revenue - recivedPayment;
+                
+                    // ====== UPDATE UI (WITH ANIMATION IF YOU ADDED IT) ======
+                    animateNumber(document.querySelector(".revenue"), revenue);
+                    animateNumber(document.querySelector(".paymentRecived"), recivedPayment);
+                    animateNumber(document.querySelector(".pendingDues"), dueAmount);
+                
+                    // ====== CHART DATA ======
+                    let labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                
+                    let totalIncome = Number(data.data.paid.paidAmount);
+                    let totalDue = Number(data.data.due.totalAmount) - Number(data.data.due.paidAmount);
+                
+                    // Temporary distribution (same as your logic)
+                    let incomeData = [20, 40, 35, 60, 80, totalIncome];
+                    let dueData = [50, 45, 40, 30, 25, totalDue];
+                
+                    setTimeout(() => {
+                        renderChart(labels, incomeData, dueData);
+                    }, 150);
+                
+                } else {
+                    showToast(data.msg, "danger");
                 }
             });
+
             document.querySelector(".recent1").innerHTML = localStorage.getItem("recent1") || "No Activity";
             document.querySelector(".recent2").innerHTML = localStorage.getItem("recent2") ;
             document.querySelector(".recent3").innerHTML = localStorage.getItem("recent3") ;
@@ -85,9 +120,21 @@ document.addEventListener("DOMContentLoaded" , ()=>{
 });
 
 function renderChart(labels, incomeData, dueData) {
-    const ctx = document.getElementById('financeChart').getContext('2d');
+    const canvas = document.getElementById('financeChart');
 
-    new Chart(ctx, {
+    if (!canvas) {
+        console.error("Canvas not found");
+        return;
+    }
+
+    const ctx = canvas.getContext('2d');
+
+    // Destroy previous chart
+    if (financeChartInstance) {
+        financeChartInstance.destroy();
+    }
+
+    financeChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -114,6 +161,7 @@ function renderChart(labels, incomeData, dueData) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, // important
             plugins: {
                 legend: {
                     labels: {
@@ -138,25 +186,3 @@ function renderChart(labels, incomeData, dueData) {
     });
 }
 
-let labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-let incomeData = [];
-let dueData = [];
-
-fetch("/api/home/revenue", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" }
-})
-.then(res => res.json())
-.then(data => {
-    if (data.success) {
-        // You can replace this with real monthly breakdown later
-        let totalIncome = Number(data.data.paid.paidAmount);
-        let totalDue = Number(data.data.due.totalAmount) - Number(data.data.due.paidAmount);
-
-        // Fake distribution (for now visual effect)
-        incomeData = [20, 40, 35, 60, 80, totalIncome];
-        dueData = [50, 45, 40, 30, 25, totalDue];
-
-        renderChart(labels, incomeData, dueData);
-    }
-});

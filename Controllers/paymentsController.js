@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import paymentsModal from "../Modals/paymentsModal.js";
 import invoiceModel from "../Modals/invoicesModal.js";
 import { sendHttpResponse } from "../Utils/httpResponse.js";
+import { releaseStockService } from "./stockController.js";
 
 const createPaymentController = async (req, res) => {
     try {
@@ -70,11 +71,15 @@ const createPaymentController = async (req, res) => {
         });
 
         invoice.paid_amount = (invoice.paid_amount) + amount;
-        invoice.status =
-            invoice.paid_amount >= invoice.total_amount
-                ? "paid"
-                : "due";
+        let oldStatus = invoice.status;
+        let newStatus = invoice.paid_amount >= invoice.total_amount ? "paid" : "due";
+        invoice.status = newStatus;
 
+        if(oldStatus === "pending")
+        {
+            await releaseStockService(invoice.items , newStatus);
+        }
+        
         await invoice.save();
 
         return sendHttpResponse(
@@ -94,7 +99,6 @@ const createPaymentController = async (req, res) => {
         );
     }
 };
-
 
 const readPaymentController = async (req, res) => {
     try {

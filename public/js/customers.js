@@ -1,3 +1,20 @@
+function animateNumber(element, target, duration = 1200) {
+    let start = 0;
+    const increment = target / (duration / 16); // ~60fps
+
+    function update() {
+        start += increment;
+
+        if (start >= target) {
+            element.innerHTML = Math.floor(target);
+        } else {
+            element.innerHTML = Math.floor(start);
+            requestAnimationFrame(update);
+        }
+    }
+
+    update();
+}
 const saveBtn = document.querySelector(".saveBtn");
     saveBtn.addEventListener("click" , (e)=>{
         e.preventDefault();
@@ -49,8 +66,8 @@ async function loadCustomers() {
     });
     const data = await res.json();
     tableBody.innerHTML = "";
-    document.querySelector(".totalCustomers").innerHTML = data.data.count;
-    document.querySelector(".activeCustomers").innerHTML = 0;
+    animateNumber(document.querySelector(".totalCustomers") , data.data.count);
+    animateNumber(document.querySelector(".activeCustomers") ,  data.data.count);
     if(data.data.customers.length == 0)
     {
         tableBody.innerHTML += `
@@ -130,7 +147,7 @@ async function viewCustomer(id) {
     c.invoices.forEach(e =>{
         document.getElementById("viewCustomerInvoice").innerHTML += `
             <div class='col-md-4'>
-                <input type="text" class="form-control" value="${e.invoice_number} - [${e.status}]" readonly>
+                <input type="text" class="form-control" value="${e.invoice_number} - [${e.status.toUpperCase()}]" readonly>
             </div>
         `;
     })

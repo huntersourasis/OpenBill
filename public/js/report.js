@@ -1,3 +1,20 @@
+function animateNumber(element, target, duration = 1200) {
+    let start = 0;
+    const increment = target / (duration / 16); // ~60fps
+
+    function update() {
+        start += increment;
+
+        if (start >= target) {
+            element.innerHTML = Math.floor(target);
+        } else {
+            element.innerHTML = Math.floor(start);
+            requestAnimationFrame(update);
+        }
+    }
+
+    update();
+}
 const fromDateEl = document.querySelector(".fromDate");
 const toDateEl = document.querySelector(".toDate");
 const reportTypeEl = document.querySelector(".reportType");
@@ -37,9 +54,9 @@ fetch("/api/home/revenue" , {
         let revenue = Number(data.data.paid.totalAmount) + Number(data.data.due.totalAmount);
         let recivedPayment = Number(data.data.paid.paidAmount) + Number(data.data.due.paidAmount);
         let dueAmount = revenue - recivedPayment; 
-        document.querySelector(".revenue").innerHTML = revenue;
-        document.querySelector(".paymentRecived").innerHTML = recivedPayment;
-        document.querySelector(".pendingDues").innerHTML = dueAmount;
+        animateNumber(document.querySelector(".revenue") , revenue);
+        animateNumber(document.querySelector(".paymentRecived") , recivedPayment);
+        animateNumber(document.querySelector(".pendingDues") , dueAmount);
     } else
     {
         showToast(data.msg , "danger");
@@ -55,7 +72,7 @@ fetch("/api/home/invoice" , {
 }).then((data)=>{
     if(data.success)
     {
-        document.querySelector(".invoice").innerHTML = data.data;
+        animateNumber(document.querySelector(".invoice") , data.data);
     } else
     {
         showToast(data.msg , "danger");

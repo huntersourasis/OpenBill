@@ -1,8 +1,11 @@
+import mongoose from "mongoose";
 import invoiceModel from "../Modals/invoicesModal.js";
 import paymentsModal from "../Modals/paymentsModal.js";
 import { sendHttpResponse } from "../Utils/httpResponse.js";
 import puppeteer from "puppeteer";
 import loadSettings from "../Utils/loadSettings.js";
+import { releaseStockService } from "./stockController.js";
+
 
 const createInvoiceController = async (req, res) => {
     try {
@@ -10,56 +13,81 @@ const createInvoiceController = async (req, res) => {
             inv_number,
             inv_date,
             due_date,
-            customer_id, 
-            status,      
+            customer_id,
+            status,
             items,
             tax_percent = 0,
             notes,
             created_by
         } = req.body;
 
-        if (!inv_number || !customer_id || !items || items.length === 0 || !status) {
-            return sendHttpResponse(res , 400 , false , "Missing required fields");
+        if (!inv_number || !customer_id || !items?.length || !status) {
+            return sendHttpResponse(res, 400, false, "Missing required fields");
         }
 
         let subtotal = 0;
+
         const processedItems = items.map(item => {
-            const lineTotal = Number(item.quantity) * Number(item.rate);
-            subtotal += lineTotal;
+            const amount = Number(item.quantity) * Number(item.rate);
+            subtotal += amount;
+
             return {
                 product_id: item.product_id,
                 name: item.name,
                 quantity: Number(item.quantity),
                 rate: Number(item.rate),
-                amount: lineTotal
+                amount
             };
         });
 
-        const tax_amount = (subtotal * Number(tax_percent)) / 100;
+        const tax_amount = (subtotal * tax_percent) / 100;
         const total_amount = subtotal + tax_amount;
 
+        if (status === "paid" || status === "due") {
+            await releaseStockService(items, status);
+        }
 
-        const newInvoice = await invoiceModel.create({
-            inv_number,
-            inv_date: inv_date || new Date(),
-            due_date,
-            customer_id,       
-            status: status || "pending",
-            items: processedItems,
-            subtotal,
-            tax_percent,
-            tax_amount,
-            total_amount,
-            paid_amount : 0,
-            notes,
-            created_by 
-        });
+        let newInvoice;
 
-        return sendHttpResponse(res , 201 , true , `# Created Invoice ${inv_number}` , newInvoice);
+        try {
+            newInvoice = await invoiceModel.create({
+                inv_number,
+                inv_date: inv_date || new Date(),
+                due_date,
+                customer_id,
+                status,
+                items: processedItems,
+                subtotal,
+                tax_percent,
+                tax_amount,
+                total_amount,
+                paid_amount: 0,
+                notes,
+                created_by
+            });
+
+        } catch (err) {
+            if (status === "paid" || status === "due") {
+                for (const item of items) {
+                    await productsModal.updateOne(
+                        { _id: item.product_id },
+                        { $inc: { stock: item.quantity } }
+                    );
+                }
+            }
+            throw err;
+        }
+        return sendHttpResponse(
+            res,
+            201,
+            true,
+            `# Created Invoice ${inv_number}`,
+            newInvoice
+        );
 
     } catch (error) {
         console.error("SERVER ERROR:", error);
-        return sendHttpResponse(res , 500 , false , error.message);
+        return sendHttpResponse(res, 500, false, error.message);
     }
 };
 

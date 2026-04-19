@@ -10,7 +10,7 @@ const defaultCSM = {
 const defaultBTM = {
     section: "billandtax",
     default_tax: 12,
-    invoice_prefix: "INV-",
+    invoice_prefix: "INV",
     currency: "INR",
     automatic_invoice_numbering: true
 };

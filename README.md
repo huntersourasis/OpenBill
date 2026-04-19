@@ -3,7 +3,6 @@
 ![OpenBill](https://img.shields.io/badge/OpenBill-v1.0.0-blue)
 ![Node.js](https://img.shields.io/badge/Node.js-v18+-green)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Ready-green)
-![License](https://img.shields.io/badge/License-ISC-blue)
 
 _A professional, open-source billing and invoice management system designed for small to medium-sized businesses. Built with modern technologies for beautiful UI, flagship features, and simple operations._
 
@@ -61,7 +60,7 @@ Complete invoice creation, management, and tracking system with professional fea
 - ✅ Payment amount tracking
 - ✅ Invoice history and archival
 
-![Invoice Management Screenshot](./docs/screenshots/invoices.jpeg)
+![Invoice Management Screenshot](./docs/screenshots/invoices.png)
 
 ---
 
@@ -267,11 +266,11 @@ Create a `.env` file in the root directory with your configuration:
 
 ```env
 # MongoDB Connection
-MongoURI=mongodb+srv://<username>:<password>@cluster.mongodb.net/openbill?retryWrites=true&w=majority
+MongoURI="mongodb://<YOUR_USERNAME>:<YOUR_PASSWORD>@ac-81e48gj-shard-00-00.hejoktu.mongodb.net:27017,ac-81e48gj-shard-00-01.hejoktu.mongodb.net:27017,ac-81e48gj-shard-00-02.hejoktu.mongodb.net:27017/openbill?ssl=true&replicaSet=atlas-ak2mkk-shard-0&authSource=admin&appName=OpenSource"
 
 # Server Configuration
 PORT=3000
-NODE_ENV=development
+NODE_ENV="development"
 
 # JWT Secret (use a strong random string)
 JWT_SECRET="your_super_secret_jwt_key_here_change_this_in_production"
@@ -323,7 +322,7 @@ npm run dev
 
 The application will be available at:
 
-- **URL:** `http://localhost:3000`
+- **URL:** `http://localhost:2026`
 - **Admin Email:** `admin@gmail.com`
 - **Admin Password:** `sourasis`
 
@@ -486,7 +485,7 @@ OpenBill/
 
 ### Initial Login
 
-1. Open your browser and navigate to `http://localhost:3000`
+1. Open your browser and navigate to `http://localhost:2026`
 2. Log in with default admin credentials:
    - **Email:** `admin@gmail.com`
    - **Password:** `sourasis`
@@ -594,7 +593,7 @@ OpenBill/
 ### Base URL
 
 ```
-http://localhost:3000/api
+http://localhost:2026/api
 ```
 
 ### Authentication
@@ -604,81 +603,6 @@ All API endpoints (except auth) require JWT token in cookies or headers:
 ```
 Cookie: token=<JWT_TOKEN>
 ```
-
-### API Endpoints
-
-#### Authentication
-
-- `POST /auth/login` - User login
-- `POST /auth/logout` - User logout
-- `POST /auth/register` - Register new user
-
-#### Home/Dashboard
-
-- `GET /api/home/invoices` - Get current year invoice count
-- `GET /api/home/dashboard` - Get dashboard metrics
-
-#### Invoices
-
-- `GET /api/invoices` - Get all invoices
-- `POST /api/invoices` - Create new invoice
-- `GET /api/invoices/:id` - Get invoice details
-- `PUT /api/invoices/:id` - Update invoice
-- `DELETE /api/invoices/:id` - Delete invoice
-- `GET /api/invoices/:id/pdf` - Generate PDF
-
-#### Payments
-
-- `GET /api/payments` - Get all payments
-- `POST /api/payments` - Record payment
-- `PUT /api/payments/:id` - Update payment
-- `DELETE /api/payments/:id` - Cancel payment
-
-#### Products
-
-- `GET /api/products` - Get all products
-- `POST /api/products` - Add product
-- `PUT /api/products/:id` - Update product
-- `DELETE /api/products/:id` - Delete product
-
-#### Customers
-
-- `GET /api/customers` - Get all customers
-- `POST /api/customers` - Add customer
-- `PUT /api/customers/:id` - Update customer
-- `DELETE /api/customers/:id` - Delete customer
-
-#### Users
-
-- `GET /api/users` - Get all users
-- `POST /api/users` - Create user
-- `PUT /api/users/:id` - Update user
-- `DELETE /api/users/:id` - Deactivate user
-
-#### Reports
-
-- `GET /api/report/financial` - Financial report
-- `GET /api/report/invoices` - Invoice report
-- `GET /api/report/payments` - Payment report
-- `GET /api/report/export` - Export report
-
-#### Settings
-
-- `GET /api/settings` - Get all settings
-- `PUT /api/settings` - Update settings
-
-### Response Format
-
-```json
-{
-  "success": true,
-  "status": 200,
-  "message": "Operation successful",
-  "data": {}
-}
-```
-
----
 
 ## 🔐 Security Features
 
@@ -728,17 +652,11 @@ Bug reports and feature requests are welcome via GitHub Issues.
 
 ---
 
-## 📝 License
-
-This project is licensed under the **ISC License**. You can use it for commercial purposes, modify it, and distribute it.
-
----
-
 ## 📧 Support & Contact
 
 - **GitHub Issues:** Report bugs or request features
 - **GitHub Discussions:** Ask questions and share ideas
-- **Email:** support@openbill.com
+- **Email:** clashersourasis@gmail.com
 
 ---
 
@@ -751,6 +669,7 @@ This project is licensed under the **ISC License**. You can use it for commercia
 - [MongoDB](https://www.mongodb.com) - Database
 - [EJS](https://ejs.co) - Template engine
 - [Puppeteer](https://pptr.dev) - PDF generation
+- [Bootstrap5.3](https://getbootstrap.com) - Fontend Framework
 
 ---
 

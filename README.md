@@ -40,7 +40,7 @@ Monitor your business at a glance with a comprehensive dashboard showing key met
 - Payment status overview
 - Quick action buttons
 
-![Dashboard Screenshot](./public/images/screenshots/dashboard.png)
+![Dashboard Screenshot](./docs/screenshots/dashboard.jpeg)
 
 ---
 
@@ -61,7 +61,7 @@ Complete invoice creation, management, and tracking system with professional fea
 - ✅ Payment amount tracking
 - ✅ Invoice history and archival
 
-![Invoice Management Screenshot](./public/images/screenshots/invoices.png)
+![Invoice Management Screenshot](./docs/screenshots/invoices.jpeg)
 
 ---
 
@@ -84,7 +84,7 @@ Advanced payment tracking and management system supporting multiple payment meth
 - ✅ Generate payment reports
 - ✅ Automated payment reconciliation
 
-![Payment Management Screenshot](./public/images/screenshots/payments.png)
+![Payment Management Screenshot](./docs/screenshots/payments.jpeg)
 
 ---
 
@@ -103,7 +103,7 @@ Centralized product/service catalog with inventory management.
 - ✅ Integration with invoice items
 - ✅ Bulk product operations
 
-![Product Management Screenshot](./public/images/screenshots/products.png)
+![Product Management Screenshot](./docs/screenshots/products.jpeg)
 
 ---
 
@@ -122,7 +122,7 @@ Comprehensive customer database and relationship management.
 - ✅ Link invoices to customers
 - ✅ Customer status management
 
-![Customer Management Screenshot](./public/images/screenshots/customers.png)
+![Customer Management Screenshot](./docs/screenshots/customers.jpeg)
 
 ---
 
@@ -143,7 +143,7 @@ Role-based user management with permission control for team collaboration.
 - ✅ User activity logging
 - ✅ Password protection and security
 
-![User Management Screenshot](./public/images/screenshots/users.png)
+![User Management Screenshot](./docs/screenshots/users.jpeg)
 
 ---
 
@@ -166,7 +166,7 @@ Generate comprehensive reports for business insights and analysis.
 - ✅ Monthly/Yearly analytics
 - ✅ Visual data representation
 
-![Reports Screenshot](./public/images/screenshots/reports.png)
+![Reports Screenshot](./docs/screenshots/reports.jpeg)
 
 ---
 
@@ -187,7 +187,7 @@ Flexible application configuration to match your business requirements.
 - ✅ Backup and restore functionality
 - ✅ System-wide configuration management
 
-![Settings Screenshot](./public/images/screenshots/settings.png)
+![Settings Screenshot](./docs/screenshots/settings.jpeg)
 
 ---
 
@@ -209,8 +209,6 @@ Our philosophy emphasizes:
 - Data security
 
 ---
-
-
 
 ## 🛠️ Tech Stack
 

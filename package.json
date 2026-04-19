@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --env-file .env server.js",
-    "update": "git pull origin main"
+    "update": "git pull origin main",
+    "setup": "node --env-file .env setup.js"
   },
   "keywords": [],
   "author": "",

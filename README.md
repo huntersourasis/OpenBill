@@ -7,20 +7,6 @@
 _A professional, open-source billing and invoice management system designed for small to medium-sized businesses. Built with modern technologies for beautiful UI, flagship features, and simple operations._
 
 ---
-
-## 📑 Table of Contents
-
-- [Features](#features)
-- [Design Philosophy](#design-philosophy)
-- [Tech Stack](#tech-stack)
-- [Setup Instructions](#setup-instructions)
-- [Project Structure](#project-structure)
-- [Usage Instructions](#usage-instructions)
-- [API Documentation](#api-documentation)
-- [Security Features](#security-features)
-- [Contributing](#contributing)
-- [License & Support](#license--support)
-
 ---
 
 ## ✨ Features

@@ -1,18 +1,23 @@
 {
   "name": "billing-system",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --env-file .env server.js",
-    "update": "git pull origin main",
-    "setup": "node --env-file .env setup.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Billing System Desktop App",
+  "main": "electron/main.js",
   "type": "module",
+  "scripts": {
+    "dev": "nodemon --env-file .env server.js",
+    "start": "electron .",
+    "build": "electron-builder",
+    "setup": "node --env-file .env setup.js",
+    "update": "git pull origin main"
+  },
+  "build": {
+    "appId": "com.billing.system",
+    "productName": "OpenBILL",
+    "win": {
+      "target": "nsis"
+    }
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
@@ -23,7 +28,11 @@
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.2",
-    "nodemon": "^3.1.11",
     "puppeteer": "^24.34.0"
+  },
+  "devDependencies": {
+    "electron": "^41.2.1",
+    "electron-builder": "^26.8.1",
+    "nodemon": "^3.1.11"
   }
 }

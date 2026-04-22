@@ -1,9 +1,10 @@
 {
-  "name": "billing-system",
+  "name": "openbill",
   "version": "1.0.0",
   "description": "Billing System Desktop App",
-  "main": "electron/main.js",
+  "main": "./electron/main.js",
   "type": "module",
+  "author": "huntersourasis",
   "scripts": {
     "dev": "nodemon --env-file .env server.js",
     "start": "electron .",
@@ -12,16 +13,45 @@
     "update": "git pull origin main"
   },
   "build": {
-    "appId": "com.billing.system",
+    "appId": "com.openbill.system",
     "productName": "OpenBILL",
+    "directories": {
+      "buildResources": "electron"
+    },
+    "files": [
+      "electron/**/*",
+      "server.js",
+      "views/**/*",
+      "public/**/*",
+      "Controllers/*",
+      "Routers/*",
+      "Modals/*",
+      "Utils/*",
+      "DB/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "server.js",
+      "views/**/*",
+      "public/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": ".env",
+        "to": ".env"
+      }
+    ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "electron/icon.png",
+      "signAndEditExecutable": false
     }
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
     "ejs": "^3.1.10",
     "exceljs": "^4.4.0",
     "express": "^5.2.1",

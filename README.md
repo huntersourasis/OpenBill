@@ -229,7 +229,7 @@ Our philosophy emphasizes:
 #### Step 1: Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/huntersourasis/OpenBill.git
 cd OpenBill
 ```
 
